@@ -76,7 +76,7 @@ class LevelChangeSystem : IteratingSystem(
         val start = vec2(startX.toFloat(), startY.toFloat())
         // parse path info
         val pathSplit = pathLine.substringAfter("path=").split(",").map { it.trim() }
-        val path = gdxArrayOf<Vector2>()
+        val path = gdxArrayOf<Vector2>(start.cpy())
         val waypoint = start.cpy()
         var currentDirection = pathSplit.first()
         for ((index, direction) in pathSplit.withIndex()) {

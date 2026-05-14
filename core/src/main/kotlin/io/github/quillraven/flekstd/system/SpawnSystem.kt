@@ -63,7 +63,9 @@ class SpawnSystem : IteratingSystem(
             it += Animation(gdxAnimation)
             it += FollowPath(path)
         }
-        // TODO when finish reached -> stop animation, fade out and remove the entity
+        // TODO spawn second/third wave, etc.
+        // TODO create one boss enemy
+        // TODO let them move outside the map before removing them
     }
 
     override fun onDispose() {

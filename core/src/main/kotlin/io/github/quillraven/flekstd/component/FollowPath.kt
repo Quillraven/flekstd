@@ -6,7 +6,8 @@ import com.github.quillraven.fleks.ComponentType
 import ktx.collections.GdxArray
 
 data class FollowPath(val path: GdxArray<Vector2>) : Component<FollowPath> {
-    var currentPathIndex = 0
+    var currentPathIndex = 1
+    var alpha = 0f
 
     override fun type() = FollowPath
 
