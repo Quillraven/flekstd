@@ -1,5 +1,6 @@
 package io.github.quillraven.flekstd.system
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.utils.Scaling
@@ -27,15 +28,17 @@ class RenderSystem(
         batch.use(camera) {
             super.onTick() // renders all entities
         }
+        batch.color = Color.WHITE
     }
 
     override fun onTickEntity(entity: Entity) {
-        val (region, regionSize) = entity[Render]
+        val (region, regionSize, color) = entity[Render]
         val (position, size) = entity[Transform]
 
         // scale texture inside transform size by keeping aspect ratio
         val realSize = Scaling.fill.apply(regionSize.x, regionSize.y, size.x, size.y)
 
+        batch.color = color
         batch.draw(region, position.x, position.y, realSize.x, realSize.y)
     }
 }

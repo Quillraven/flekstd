@@ -6,9 +6,10 @@ import com.badlogic.gdx.math.Vector2
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
-import io.github.quillraven.flekstd.component.LevelChange
+import io.github.quillraven.flekstd.component.LevelChangeRequest
 import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Spawn
+import io.github.quillraven.flekstd.component.Tag
 import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_GROUND
 import io.github.quillraven.flekstd.component.WaveInfo
@@ -19,14 +20,13 @@ import ktx.log.logger
 import ktx.math.vec2
 
 class LevelChangeSystem : IteratingSystem(
-    family = family { all(LevelChange) }
+    family = family { all(LevelChangeRequest) }
 ) {
     private val grassRegion = TextureRegion(Texture("graphic/grass.png"))
     private val pathRegion = TextureRegion(Texture("graphic/path.png"))
 
     override fun onTickEntity(entity: Entity) {
-        val (levelFile) = entity[LevelChange]
-        entity.remove()
+        val (levelFile) = entity[LevelChangeRequest]
 
         // load file content
         log.debug { "Loading level '$levelFile'" }
@@ -38,8 +38,11 @@ class LevelChangeSystem : IteratingSystem(
 
         // parse wave + spawn interval info
         createSpawnEntity(lines)
-
         // create map by spawning ground entities
+        createGroundEntities(lines)
+    }
+
+    private fun createGroundEntities(lines: List<String>) {
         val linesToSkip = 4 // waveInfo, spawnTime, path, ...
         val mapHeight = lines.size - linesToSkip - 1
         lines.forEachIndexed { y, line ->
@@ -105,11 +108,13 @@ class LevelChangeSystem : IteratingSystem(
     private fun spawnGroundEntity(x: Int, y: Int, groundType: Char) {
         world.entity {
             it += Transform(position = vec2(x.toFloat(), y.toFloat()), size = vec2(1f, 1f), z = Z_GROUND)
-            it += when (groundType) {
-                'S' -> Render(pathRegion)
-                'F' -> Render(pathRegion)
-                '#' -> Render(pathRegion)
-                else -> Render(grassRegion)
+            if (groundType == 'S' || groundType == '#') {
+                // path
+                it += Render(pathRegion)
+                it += Tag.PATH
+            } else {
+                // ground
+                it += Render(grassRegion)
             }
         }
     }
