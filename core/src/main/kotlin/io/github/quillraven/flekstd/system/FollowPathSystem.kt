@@ -10,19 +10,19 @@ class FollowPathSystem : IteratingSystem(
     family = family { all(FollowPath, Transform) }
 ) {
     override fun onTickEntity(entity: Entity) {
-        val followPath = entity[FollowPath]
+        val followPathCmp = entity[FollowPath]
         val (position) = entity[Transform]
 
-        val from = followPath.path[followPath.currentPathIndex - 1]
-        val to = followPath.path[followPath.currentPathIndex]
+        val from = followPathCmp.path[followPathCmp.currentPathIndex - 1]
+        val to = followPathCmp.path[followPathCmp.currentPathIndex]
 
-        followPath.alpha += deltaTime * SPEED / from.dst(to)
-        position.set(from).lerp(to, followPath.alpha.coerceAtMost(1f))
+        followPathCmp.alpha += deltaTime * SPEED / from.dst(to)
+        position.set(from).lerp(to, followPathCmp.alpha.coerceAtMost(1f))
 
-        if (followPath.alpha >= 1f) {
-            followPath.alpha = 0f
-            followPath.currentPathIndex++
-            if (followPath.currentPathIndex >= followPath.path.size) {
+        if (followPathCmp.alpha >= 1f) {
+            followPathCmp.alpha = 0f
+            followPathCmp.currentPathIndex++
+            if (followPathCmp.currentPathIndex >= followPathCmp.path.size) {
                 entity.remove()
             }
         }
