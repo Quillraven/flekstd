@@ -12,11 +12,25 @@ data class WaveInfo(
 )
 
 data class Spawn(
-    val start: Vector2,
-    val wavesInfo: GdxArray<WaveInfo>,
     val path: GdxArray<Vector2>,
+    val wavesInfo: GdxArray<WaveInfo>,
 ) : Component<Spawn> {
+    var timer = wavesInfo.first().interval
+    var waveIdx = 0
+    var numSpawns = 0
+
+    val currentWaveInfo: WaveInfo
+        get() = wavesInfo[waveIdx]
+
     override fun type() = Spawn
+
+    fun nextWave() {
+        waveIdx++
+        numSpawns = 0
+        if (waveIdx >= wavesInfo.size) return
+        timer = wavesInfo[waveIdx].interval
+
+    }
 
     companion object : ComponentType<Spawn>()
 }

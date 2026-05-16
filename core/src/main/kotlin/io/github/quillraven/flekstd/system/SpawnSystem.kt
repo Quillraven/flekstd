@@ -11,64 +11,77 @@ import io.github.quillraven.flekstd.component.FollowPath
 import io.github.quillraven.flekstd.component.GdxAnimation
 import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Spawn
+import io.github.quillraven.flekstd.component.Tag
 import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_OBJECT
 import ktx.collections.GdxArray
 import ktx.collections.getOrPut
 import ktx.collections.set
 import ktx.collections.toGdxArray
+import ktx.log.logger
 import ktx.math.vec2
 
 class SpawnSystem : IteratingSystem(
-    family = family { all(Spawn) }
+    family = family { all(Spawn, Tag.SPAWNING) }
 ) {
-    private var timer = 0f
-    private var waveIdx = 0
     private val disposableTextures: ObjectMap<String, Texture> = ObjectMap()
     private val animationMap: ObjectMap<String, GdxAnimation> = ObjectMap()
 
     init {
-        animationMap["pawn"] = GdxAnimation(1 / 10f, regions("pawn.png"))
+        animationMap["pawn"] = GdxAnimation(1 / 10f, regions("pawn.png", 66, 77))
+        animationMap["lancer"] = GdxAnimation(1 / 10f, regions("lancer.png", 70, 138))
     }
 
-    private fun regions(fileName: String): GdxArray<TextureRegion> {
+    private fun regions(fileName: String, tileWidth: Int, tileHeight: Int): GdxArray<TextureRegion> {
         val filePath = "graphic/$fileName"
         val sheet = disposableTextures.getOrPut(filePath) { Texture(filePath) }
-        val regions = TextureRegion.split(sheet, 66, 77)
+        val regions = TextureRegion.split(sheet, tileWidth, tileHeight)
         return regions.flatten().toGdxArray()
     }
 
     override fun onTickEntity(entity: Entity) {
-        val (start, wavesInfo, path) = entity[Spawn]
-        val currentWaveInfo = wavesInfo[waveIdx]
+        val spawnCmp = entity[Spawn]
+        val currentWaveInfo = spawnCmp.currentWaveInfo
+        if (spawnCmp.numSpawns >= spawnCmp.currentWaveInfo.amount) {
+            // all entities of this wave have been spawned -> wait for next wave
+            spawnCmp.nextWave()
+            log.debug { "Wave ${spawnCmp.waveIdx} of ${spawnCmp.wavesInfo.size} finished" }
+            if (spawnCmp.waveIdx >= spawnCmp.wavesInfo.size) {
+                // all waves have been spawned -> remove spawning entity
+                log.debug { "All waves finished" }
+                entity.remove()
+            }
+            entity.configure { it -= Tag.SPAWNING }
+            return
+        }
 
         // update timer and wave index
-        timer += deltaTime
-        if (timer < currentWaveInfo.interval) {
+        spawnCmp.timer += deltaTime
+        if (spawnCmp.timer < currentWaveInfo.interval) {
             // not enough time has passed yet -> do nothing
             return
         }
-        timer = 0f
-        waveIdx++
-        if (waveIdx >= wavesInfo.size) {
-            // all entities spawned -> remove spawner
-            entity.remove()
-        }
+        spawnCmp.timer = 0f
+        spawnCmp.numSpawns++
 
         // spawn a new entity
         val gdxAnimation = animationMap[currentWaveInfo.type]
+        val start = spawnCmp.path.first()
         world.entity {
             it += Transform(position = start.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
             it += Render(gdxAnimation.keyFrames.first())
             it += Animation(gdxAnimation)
-            it += FollowPath(path)
+            it += FollowPath(spawnCmp.path)
         }
-        // TODO spawn second/third wave, etc.
-        // TODO create one boss enemy
-        // TODO let them move outside the map before removing them
+        // TODO move animation cache outside of this system
+        // TODO maybe use DisposableRegistry for the textures?
     }
 
     override fun onDispose() {
         disposableTextures.values().forEach { it.dispose() }
+    }
+
+    companion object {
+        private val log = logger<SpawnSystem>()
     }
 }

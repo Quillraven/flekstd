@@ -9,7 +9,6 @@ import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.LevelChange
 import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Spawn
-import io.github.quillraven.flekstd.component.Tag
 import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_GROUND
 import io.github.quillraven.flekstd.component.WaveInfo
@@ -99,26 +98,18 @@ class LevelChangeSystem : IteratingSystem(
 
         // create spawn entity
         world.entity {
-            it += Spawn(start, wavesInfo, path)
+            it += Spawn(path, wavesInfo)
         }
     }
 
     private fun spawnGroundEntity(x: Int, y: Int, groundType: Char) {
         world.entity {
             it += Transform(position = vec2(x.toFloat(), y.toFloat()), size = vec2(1f, 1f), z = Z_GROUND)
-            when (groundType) {
-                'S' -> {
-                    it += Render(pathRegion)
-                    it += Tag.SPAWN_START
-                }
-
-                'F' -> {
-                    it += Render(pathRegion)
-                    it += Tag.SPAWN_END
-                }
-
-                '#' -> it += Render(pathRegion)
-                else -> it += Render(grassRegion)
+            it += when (groundType) {
+                'S' -> Render(pathRegion)
+                'F' -> Render(pathRegion)
+                '#' -> Render(pathRegion)
+                else -> Render(grassRegion)
             }
         }
     }
