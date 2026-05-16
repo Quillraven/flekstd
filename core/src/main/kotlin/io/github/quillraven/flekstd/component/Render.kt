@@ -25,5 +25,7 @@ class Render(
 
     operator fun component2(): Vector2 = regionSize
 
-    companion object : ComponentType<Render>()
+    companion object : ComponentType<Render>() {
+        val EMPTY_REGION = TextureRegion()
+    }
 }

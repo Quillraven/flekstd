@@ -7,8 +7,9 @@ import com.github.quillraven.fleks.ComponentType
 typealias GdxAnimation = com.badlogic.gdx.graphics.g2d.Animation<TextureRegion>
 
 data class Animation(
-    val gdxAnimation: GdxAnimation,
+    val key: String,
 ) : Component<Animation> {
+    var gdxAnimation: GdxAnimation? = null
     var stateTime: Float = 0f
 
     override fun type() = Animation
