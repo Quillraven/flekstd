@@ -19,30 +19,40 @@ class AttackSystem : IteratingSystem(
         val attackCmp = entity[Attack]
         val animationCmp = entity.getOrNull(Animation)
 
+        // tick cooldown and animation
         if (attackCmp.timer > 0f) {
-            // attack on cooldown
             attackCmp.timer -= deltaTime
             if (animationCmp?.currentType == AnimationType.ATTACK && animationCmp.isFinished()) {
                 animationCmp.changeTo(AnimationType.IDLE, PlayMode.LOOP)
             }
-            return
         }
+
+        // tick pending damage
+        if (attackCmp.damageTimer > 0f) {
+            attackCmp.damageTimer -= deltaTime
+            if (attackCmp.damageTimer <= 0f) {
+                val target = entity[Perimeter].target
+                if (!target.wasRemoved()) {
+                    target.configure {
+                        val damageRequestCmp = it.getOrAdd(DamageRequest) { DamageRequest(gdxArrayOf()) }
+                        damageRequestCmp.requests.add(DamageInfo(entity, attackCmp.damage))
+                    }
+                }
+            }
+        }
+
+        if (attackCmp.timer > 0f) return
 
         // attack ready -> check if there is a target
         val target = entity[Perimeter].target
         if (target.wasRemoved()) {
-            // target already removed (e.g. killed by a tower) or there is no target
             animationCmp?.changeTo(AnimationType.IDLE, PlayMode.LOOP)
             return
         }
 
-        // damage target
+        // start attack: schedule damage after delay
         animationCmp?.changeTo(AnimationType.ATTACK, PlayMode.NORMAL)
         attackCmp.timer = attackCmp.cooldown
-        target.configure {
-            val damageRequestCmp = it.getOrAdd(DamageRequest) { DamageRequest(gdxArrayOf()) }
-            damageRequestCmp.requests.add(DamageInfo(entity, attackCmp.damage))
-        }
-
+        attackCmp.damageTimer = attackCmp.damageDelay
     }
 }

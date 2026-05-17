@@ -12,17 +12,17 @@ data class TowerCfg(
         fun byTowerKey(key: String): TowerCfg = when (key) {
             "warrior" -> TowerCfg(
                 perimeter = { Perimeter(range = 1f) },
-                attack = { Attack(1f, 1f) },
+                attack = { Attack(cooldown = 0.5f, damage = 1f, damageDelay = 0.25f) },
             )
 
             "archer" -> TowerCfg(
                 perimeter = { Perimeter(range = 2.5f) },
-                attack = { Attack(0.75f, 2f) },
+                attack = { Attack(cooldown = 0.9f, damage = 2f, damageDelay = 0.6f) },
             )
 
             "monk" -> TowerCfg(
                 perimeter = { Perimeter(range = 4f) },
-                attack = { Attack(0.5f, 1f) },
+                attack = { Attack(cooldown = 1.2f, damage = 1f, damageDelay = 0.55f) },
             )
 
             else -> gdxError("$key is not a tower key")
