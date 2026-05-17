@@ -17,6 +17,7 @@ import io.github.quillraven.flekstd.system.AnimationSystem
 import io.github.quillraven.flekstd.system.ConstructionSystem
 import io.github.quillraven.flekstd.system.FollowPathSystem
 import io.github.quillraven.flekstd.system.LevelChangeSystem
+import io.github.quillraven.flekstd.system.PerimeterSystem
 import io.github.quillraven.flekstd.system.RenderSystem
 import io.github.quillraven.flekstd.system.RequestCleanupSystem
 import io.github.quillraven.flekstd.system.SpawnSystem
@@ -46,6 +47,7 @@ class GameScreen(
             add(SpawnSystem())
             add(AnimationSystem())
             add(FollowPathSystem())
+            add(PerimeterSystem())
             add(RenderSystem())
             add(UiRenderSystem())
             add(RequestCleanupSystem())

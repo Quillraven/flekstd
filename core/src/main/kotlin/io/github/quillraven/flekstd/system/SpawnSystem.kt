@@ -48,6 +48,7 @@ class SpawnSystem : IteratingSystem(
             it += Render(Render.EMPTY_REGION)
             it += Animation(currentWaveInfo.type)
             it += FollowPath(spawnCmp.path)
+            it += Tag.ENEMY
         }
     }
 

@@ -11,6 +11,7 @@ import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
+import io.github.quillraven.flekstd.cfg.TowerCfg
 import io.github.quillraven.flekstd.component.Construction
 import io.github.quillraven.flekstd.component.LevelChangeRequest
 import io.github.quillraven.flekstd.component.Render
@@ -34,6 +35,7 @@ class ConstructionSystem(
     private val blockedTiles = gdxArrayOf<Vector2>()
     private var construct = false
     private val towerRegionCache: ObjectMap<String, TextureRegion> = ObjectMap()
+    private val towerCfgCache: ObjectMap<String, TowerCfg> = ObjectMap()
 
     override fun onTick() {
         if (levelChangeRequestEntities.isNotEmpty) {
@@ -75,6 +77,9 @@ class ConstructionSystem(
     fun spawnTower(towerKey: String, position: Vector2) = world.entity {
         it += Transform(position = position.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
         it += Render(towerIdleTexture(towerKey))
+
+        val cfg = towerCfgCache.getOrPut(towerKey) { TowerCfg.byTowerKey(towerKey) }
+        it += cfg.perimeter()
     }
 
     fun spawnConstructionEntity(towerKey: String) = world.entity {

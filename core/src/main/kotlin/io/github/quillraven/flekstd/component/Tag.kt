@@ -6,4 +6,5 @@ import com.github.quillraven.fleks.entityTagOf
 enum class Tag : EntityTags by entityTagOf() {
     PATH,
     SPAWNING,
+    ENEMY,
 }
