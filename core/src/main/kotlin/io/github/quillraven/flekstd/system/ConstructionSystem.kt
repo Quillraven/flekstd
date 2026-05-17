@@ -3,6 +3,7 @@ package io.github.quillraven.flekstd.system
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.ObjectMap
@@ -12,6 +13,8 @@ import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
 import io.github.quillraven.flekstd.cfg.TowerCfg
+import io.github.quillraven.flekstd.component.Animation
+import io.github.quillraven.flekstd.component.AnimationType
 import io.github.quillraven.flekstd.component.Construction
 import io.github.quillraven.flekstd.component.LevelChangeRequest
 import io.github.quillraven.flekstd.component.Render
@@ -76,10 +79,12 @@ class ConstructionSystem(
 
     fun spawnTower(towerKey: String, position: Vector2) = world.entity {
         it += Transform(position = position.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
-        it += Render(towerIdleTexture(towerKey))
+        it += Render(Render.EMPTY_REGION)
+        it += Animation(towerKey, AnimationType.IDLE, PlayMode.NORMAL)
 
         val cfg = towerCfgCache.getOrPut(towerKey) { TowerCfg.byTowerKey(towerKey) }
         it += cfg.perimeter()
+        it += cfg.attack()
     }
 
     fun spawnConstructionEntity(towerKey: String) = world.entity {

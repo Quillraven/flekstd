@@ -1,5 +1,6 @@
 package io.github.quillraven.flekstd.system
 
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.ObjectMap
 import com.github.quillraven.fleks.Entity
@@ -7,6 +8,7 @@ import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.cfg.EnemyCfg
 import io.github.quillraven.flekstd.component.Animation
+import io.github.quillraven.flekstd.component.AnimationType
 import io.github.quillraven.flekstd.component.FollowPath
 import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Spawn
@@ -61,7 +63,7 @@ class SpawnSystem : IteratingSystem(
         world.entity {
             it += Transform(position = start.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
             it += Render(Render.EMPTY_REGION)
-            it += Animation(enemyKey)
+            it += Animation(enemyKey, AnimationType.RUN, PlayMode.LOOP)
             it += FollowPath(path)
             it += Tag.ENEMY
             it += cfg.speed()
