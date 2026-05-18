@@ -2,7 +2,6 @@ package io.github.quillraven.flekstd.system
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
@@ -15,7 +14,6 @@ import com.github.quillraven.fleks.World.Companion.inject
 import io.github.quillraven.flekstd.cfg.TowerCfg
 import io.github.quillraven.flekstd.component.Animation
 import io.github.quillraven.flekstd.component.AnimationType
-import io.github.quillraven.flekstd.component.Construction
 import io.github.quillraven.flekstd.component.LevelChangeRequest
 import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Tag
@@ -30,7 +28,7 @@ import kotlin.math.floor
 class ConstructionSystem(
     private val gameViewport: Viewport = inject(),
 ) : IteratingSystem(
-    family = family { all(Transform, Construction) }
+    family = family { all(Transform, Tag.CONSTRUCTING, Render) }
 ), KtxInputAdapter {
     private val mouseWorldPos = vec2()
     private val levelChangeRequestEntities = family { all(LevelChangeRequest) }
@@ -50,20 +48,21 @@ class ConstructionSystem(
 
     override fun onTickEntity(entity: Entity) {
         val (position) = entity[Transform]
+        val renderCmp = entity[Render]
 
         position.set(floor(mouseWorldPos.x), floor(mouseWorldPos.y))
         if (construct && position !in blockedTiles) {
-            spawnTower(entity[Construction].towerKey, position)
-            entity.remove()
+            entity.configure { it -= Tag.CONSTRUCTING }
+            renderCmp.color.set(Color.WHITE)
             return
         }
 
         if (position in blockedTiles) {
-            entity[Render].color.set(Color.RED)
+            renderCmp.color.set(Color.RED)
         } else {
-            entity[Render].color.set(Color.WHITE)
+            renderCmp.color.set(Color.WHITE)
         }
-        entity[Render].color.a = 0.5f
+        renderCmp.color.a = 0.5f
     }
 
     private fun updatePath() {
@@ -73,28 +72,20 @@ class ConstructionSystem(
         }
     }
 
-    private fun towerIdleTexture(towerKey: String) = towerRegionCache.getOrPut(towerKey) {
-        TextureRegion(Texture("graphic/${towerKey}_idle.png"))
-    }
-
-    fun spawnTower(towerKey: String, position: Vector2) = world.entity {
-        it += Transform(position = position.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
-        it += Render(Render.EMPTY_REGION)
-        it += Animation(towerKey, AnimationType.IDLE, PlayMode.NORMAL)
-
-        val cfg = towerCfgCache.getOrPut(towerKey) { TowerCfg.byTowerKey(towerKey) }
-        it += cfg.perimeter()
-        it += cfg.attack()
-    }
-
-    fun spawnConstructionEntity(towerKey: String) = world.entity {
+    fun spawnConstructionTower(towerKey: String) = world.entity {
+        it += Tag.CONSTRUCTING
         it += Transform(
             position = vec2(floor(mouseWorldPos.x), floor(mouseWorldPos.y)),
             size = vec2(1f, 1f),
             z = Z_OBJECT
         )
-        it += Construction(towerKey)
-        it += Render(towerIdleTexture(towerKey))
+
+        val cfg = towerCfgCache.getOrPut(towerKey) { TowerCfg.byTowerKey(towerKey) }
+        it += Render(Render.EMPTY_REGION, cfg.scale)
+        it += Animation(towerKey, AnimationType.IDLE, PlayMode.LOOP)
+
+        it += cfg.perimeter()
+        it += cfg.attack()
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {

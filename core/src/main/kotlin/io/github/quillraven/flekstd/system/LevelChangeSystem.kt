@@ -110,11 +110,11 @@ class LevelChangeSystem : IteratingSystem(
             it += Transform(position = vec2(x.toFloat(), y.toFloat()), size = vec2(1f, 1f), z = Z_GROUND)
             if (groundType == 'S' || groundType == '#') {
                 // path
-                it += Render(pathRegion)
+                it += Render(pathRegion, scale = 1f)
                 it += Tag.PATH
             } else {
                 // ground
-                it += Render(grassRegion)
+                it += Render(grassRegion, scale = 1f)
             }
         }
     }

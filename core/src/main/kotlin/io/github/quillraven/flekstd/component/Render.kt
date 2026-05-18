@@ -10,6 +10,7 @@ import ktx.math.vec2
 
 class Render(
     region: TextureRegion,
+    var scale: Float,
 ) : Component<Render> {
     val regionSize: Vector2 = vec2(region.regionWidth.toWorldUnits(), region.regionHeight.toWorldUnits())
 
@@ -27,6 +28,7 @@ class Render(
     operator fun component1(): TextureRegion = region
     operator fun component2(): Vector2 = regionSize
     operator fun component3(): Color = color
+    operator fun component4(): Float = scale
 
     companion object : ComponentType<Render>() {
         val EMPTY_REGION = TextureRegion()

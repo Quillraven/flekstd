@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.github.quillraven.fleks.World
 import com.github.quillraven.fleks.configureWorld
 import io.github.quillraven.flekstd.GdxGame
-import io.github.quillraven.flekstd.component.Construction
 import io.github.quillraven.flekstd.component.LevelChangeRequest
 import io.github.quillraven.flekstd.component.Spawn
 import io.github.quillraven.flekstd.component.Tag
@@ -86,18 +85,18 @@ class GameScreen(
             }
 
             Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) -> {
-                world.family { all(Construction) }.forEach { it.remove() }
-                world.system<ConstructionSystem>().spawnConstructionEntity("warrior")
+                world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
+                world.system<ConstructionSystem>().spawnConstructionTower("warrior")
             }
 
             Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) -> {
-                world.family { all(Construction) }.forEach { it.remove() }
-                world.system<ConstructionSystem>().spawnConstructionEntity("archer")
+                world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
+                world.system<ConstructionSystem>().spawnConstructionTower("archer")
             }
 
             Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) -> {
-                world.family { all(Construction) }.forEach { it.remove() }
-                world.system<ConstructionSystem>().spawnConstructionEntity("monk")
+                world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
+                world.system<ConstructionSystem>().spawnConstructionTower("monk")
             }
         }
     }

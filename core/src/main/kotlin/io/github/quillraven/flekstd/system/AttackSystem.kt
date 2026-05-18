@@ -10,10 +10,11 @@ import io.github.quillraven.flekstd.component.Attack
 import io.github.quillraven.flekstd.component.DamageInfo
 import io.github.quillraven.flekstd.component.DamageRequest
 import io.github.quillraven.flekstd.component.Perimeter
+import io.github.quillraven.flekstd.component.Tag
 import ktx.collections.gdxArrayOf
 
 class AttackSystem : IteratingSystem(
-    family = family { all(Attack, Perimeter) }
+    family = family { all(Attack, Perimeter).none(Tag.CONSTRUCTING) }
 ) {
     override fun onTickEntity(entity: Entity) {
         val attackCmp = entity[Attack]
@@ -46,7 +47,9 @@ class AttackSystem : IteratingSystem(
         // attack ready -> check if there is a target
         val target = entity[Perimeter].target
         if (target.wasRemoved()) {
-            animationCmp?.changeTo(AnimationType.IDLE, PlayMode.LOOP)
+            if (animationCmp?.currentType != AnimationType.IDLE) {
+                animationCmp?.changeTo(AnimationType.IDLE, PlayMode.LOOP)
+            }
             return
         }
 

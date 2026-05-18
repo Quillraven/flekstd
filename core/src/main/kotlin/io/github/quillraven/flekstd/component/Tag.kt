@@ -7,4 +7,5 @@ enum class Tag : EntityTags by entityTagOf() {
     PATH,
     SPAWNING,
     ENEMY,
+    CONSTRUCTING,
 }

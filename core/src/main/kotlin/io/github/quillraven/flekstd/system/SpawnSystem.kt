@@ -62,7 +62,7 @@ class SpawnSystem : IteratingSystem(
         val start = path.first()
         world.entity {
             it += Transform(position = start.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
-            it += Render(Render.EMPTY_REGION)
+            it += Render(Render.EMPTY_REGION, cfg.scale)
             it += Animation(enemyKey, AnimationType.RUN, PlayMode.LOOP)
             it += FollowPath(path)
             it += Tag.ENEMY

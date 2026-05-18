@@ -32,13 +32,20 @@ class RenderSystem(
     }
 
     override fun onTickEntity(entity: Entity) {
-        val (region, regionSize, color) = entity[Render]
+        val (region, regionSize, color, scale) = entity[Render]
         val (position, size) = entity[Transform]
 
         // scale texture inside transform size by keeping aspect ratio
         val realSize = Scaling.fill.apply(regionSize.x, regionSize.y, size.x, size.y)
 
         batch.color = color
-        batch.draw(region, position.x, position.y, realSize.x, realSize.y)
+        batch.draw(
+            region,
+            position.x, position.y,
+            realSize.x * 0.5f, realSize.y * 0.5f,
+            realSize.x, realSize.y,
+            scale, scale,
+            0f // rotation
+        )
     }
 }

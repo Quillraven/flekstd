@@ -24,14 +24,14 @@ class AnimationSystem : IteratingSystem(
     private fun getAnimation(key: String): GdxAnimation = animationCache.getOrPut(key) {
         val sheet = Texture("graphic/$key.png")
         val (tileWidth, tileHeight) = when (key) {
-            "pawn" -> 66 to 77
-            "lancer" -> 70 to 138
-            "warrior_idle" -> 79 to 89
-            "warrior_attack" -> 110 to 101
-            "archer_idle" -> 70 to 88
-            "archer_attack" -> 87 to 90
-            "monk_idle" -> 58 to 69
-            "monk_attack" -> 121 to 71
+            "pawn_run" -> 192 to 192
+            "lancer_run" -> 320 to 320
+            "warrior_idle" -> 192 to 192
+            "warrior_attack" -> 192 to 192
+            "archer_idle" -> 192 to 192
+            "archer_attack" -> 192 to 192
+            "monk_idle" -> 192 to 192
+            "monk_attack" -> 192 to 192
             else -> gdxError("Unknown animation key: $key")
         }
         val regions = TextureRegion.split(sheet, tileWidth, tileHeight)
@@ -41,7 +41,7 @@ class AnimationSystem : IteratingSystem(
     private fun getAnimations(key: String): ObjectMap<AnimationType, GdxAnimation> = animationMapCache.getOrPut(key) {
         ObjectMap<AnimationType, GdxAnimation>().apply {
             when (key) {
-                "pawn", "lancer" -> this[AnimationType.RUN] = getAnimation(key)
+                "pawn", "lancer" -> this[AnimationType.RUN] = getAnimation("${key}_run")
                 else -> {
                     // tower animations
                     this[AnimationType.IDLE] = getAnimation("${key}_idle")
