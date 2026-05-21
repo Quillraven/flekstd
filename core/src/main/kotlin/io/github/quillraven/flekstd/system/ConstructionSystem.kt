@@ -2,8 +2,6 @@ package io.github.quillraven.flekstd.system
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.ObjectMap
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -34,8 +32,6 @@ class ConstructionSystem(
     private val levelChangeRequestEntities = family { all(LevelChangeRequest) }
     private val pathEntities = family { all(Transform, Tag.PATH) }
     private val blockedTiles = gdxArrayOf<Vector2>()
-    private var construct = false
-    private val towerRegionCache: ObjectMap<String, TextureRegion> = ObjectMap()
     private val towerCfgCache: ObjectMap<String, TowerCfg> = ObjectMap()
 
     override fun onTick() {
@@ -43,7 +39,6 @@ class ConstructionSystem(
             updatePath()
         }
         super.onTick()
-        construct = false
     }
 
     override fun onTickEntity(entity: Entity) {
@@ -51,12 +46,6 @@ class ConstructionSystem(
         val renderCmp = entity[Render]
 
         position.set(floor(mouseWorldPos.x), floor(mouseWorldPos.y))
-        if (construct && position !in blockedTiles) {
-            entity.configure { it -= Tag.CONSTRUCTING }
-            renderCmp.color.set(Color.WHITE)
-            return
-        }
-
         if (position in blockedTiles) {
             renderCmp.color.set(Color.RED)
         } else {
@@ -82,7 +71,7 @@ class ConstructionSystem(
 
         val cfg = towerCfgCache.getOrPut(towerKey) { TowerCfg.byTowerKey(towerKey) }
         it += Render(Render.EMPTY_REGION, cfg.scale)
-        it += Animation(towerKey, AnimationType.IDLE, PlayMode.LOOP)
+        it += Animation(AnimationType.IDLE, cfg.gdxAnimations)
 
         it += cfg.perimeter()
         it += cfg.attack()
@@ -100,11 +89,27 @@ class ConstructionSystem(
         pointer: Int,
         button: Int
     ): Boolean {
-        construct = button == Input.Buttons.LEFT
-        return mouseMoved(screenX, screenY)
+        if (button == Input.Buttons.LEFT) {
+            // construct the tower
+            mouseMoved(screenX, screenY)
+
+            family.singleOrNull()?.configure { towerEntity ->
+                val (position) = towerEntity[Transform]
+                position.set(floor(mouseWorldPos.x), floor(mouseWorldPos.y))
+                if (position !in blockedTiles) {
+                    towerEntity -= Tag.CONSTRUCTING
+                    towerEntity[Render].color.set(Color.WHITE)
+                }
+            }
+
+            return true
+        }
+        return false
     }
 
     override fun onDispose() {
-        towerRegionCache.values().forEach { it.texture.dispose() }
+        towerCfgCache.values()
+            .flatMap { it.gdxAnimations.values }
+            .forEach { it.keyFrames.first().texture.dispose() }
     }
 }

@@ -1,6 +1,5 @@
 package io.github.quillraven.flekstd.system
 
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.ObjectMap
 import com.github.quillraven.fleks.Entity
@@ -63,12 +62,18 @@ class SpawnSystem : IteratingSystem(
         world.entity {
             it += Transform(position = start.cpy(), size = vec2(1f, 1f), z = Z_OBJECT)
             it += Render(Render.EMPTY_REGION, cfg.scale)
-            it += Animation(enemyKey, AnimationType.RUN, PlayMode.LOOP)
+            it += Animation(AnimationType.RUN, cfg.gdxAnimations)
             it += FollowPath(path)
             it += Tag.ENEMY
             it += cfg.speed()
             it += cfg.health()
         }
+    }
+
+    override fun onDispose() {
+        enemyCfgCache.values()
+            .flatMap { it.gdxAnimations.values }
+            .forEach { it.keyFrames.first().texture.dispose() }
     }
 
     companion object {
