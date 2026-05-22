@@ -18,8 +18,10 @@ import io.github.quillraven.flekstd.system.ConstructionSystem
 import io.github.quillraven.flekstd.system.DamageSystem
 import io.github.quillraven.flekstd.system.FollowPathSystem
 import io.github.quillraven.flekstd.system.HealthSystem
+import io.github.quillraven.flekstd.system.HomingMoveSystem
 import io.github.quillraven.flekstd.system.LevelChangeSystem
 import io.github.quillraven.flekstd.system.PerimeterSystem
+import io.github.quillraven.flekstd.system.ProjectileSystem
 import io.github.quillraven.flekstd.system.RenderSystem
 import io.github.quillraven.flekstd.system.RequestCleanupSystem
 import io.github.quillraven.flekstd.system.SpawnSystem
@@ -47,12 +49,14 @@ class GameScreen(
             add(LevelChangeSystem())
             add(ConstructionSystem())
             add(SpawnSystem())
-            add(AnimationSystem())
             add(FollowPathSystem())
             add(PerimeterSystem())
             add(AttackSystem())
+            add(ProjectileSystem())
+            add(HomingMoveSystem())
             add(DamageSystem())
             add(HealthSystem())
+            add(AnimationSystem())
             add(RenderSystem())
             add(UiRenderSystem())
             add(RequestCleanupSystem())

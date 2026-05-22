@@ -7,14 +7,15 @@ import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.Animation
 import io.github.quillraven.flekstd.component.AnimationType
 import io.github.quillraven.flekstd.component.Attack
-import io.github.quillraven.flekstd.component.DamageInfo
-import io.github.quillraven.flekstd.component.DamageRequest
 import io.github.quillraven.flekstd.component.Perimeter
+import io.github.quillraven.flekstd.component.Projectile
+import io.github.quillraven.flekstd.component.Speed
 import io.github.quillraven.flekstd.component.Tag
-import ktx.collections.gdxArrayOf
+import io.github.quillraven.flekstd.component.Transform
+import ktx.math.vec2
 
 class AttackSystem : IteratingSystem(
-    family = family { all(Attack, Perimeter).none(Tag.CONSTRUCTING) }
+    family = family { all(Attack, Perimeter, Transform).none(Tag.CONSTRUCTING) }
 ) {
     override fun onTickEntity(entity: Entity) {
         val attackCmp = entity[Attack]
@@ -25,20 +26,6 @@ class AttackSystem : IteratingSystem(
             attackCmp.timer -= deltaTime
             if (animationCmp?.currentType == AnimationType.ATTACK && animationCmp.isFinished()) {
                 animationCmp.changeTo(AnimationType.IDLE, PlayMode.LOOP)
-            }
-        }
-
-        // tick pending damage
-        if (attackCmp.damageTimer > 0f) {
-            attackCmp.damageTimer -= deltaTime
-            if (attackCmp.damageTimer <= 0f) {
-                val target = entity[Perimeter].target
-                if (!target.wasRemoved()) {
-                    target.configure {
-                        val damageRequestCmp = it.getOrAdd(DamageRequest) { DamageRequest(gdxArrayOf()) }
-                        damageRequestCmp.requests.add(DamageInfo(entity, attackCmp.damage))
-                    }
-                }
             }
         }
 
@@ -53,9 +40,31 @@ class AttackSystem : IteratingSystem(
             return
         }
 
-        // start attack: schedule damage after delay
+        // start attack animation and spawn projectile for damage
         animationCmp?.changeTo(AnimationType.ATTACK, PlayMode.NORMAL)
         attackCmp.timer = attackCmp.cooldown
-        attackCmp.damageTimer = attackCmp.damageDelay
+
+        // spawn projectile entity
+        val projectileCfg = attackCmp.projectileCfg
+        world.entity {
+            it += Transform(
+                position = entity[Transform].position.cpy().add(attackCmp.projectileOffset),
+                size = vec2(1f, 1f),
+                z = Transform.Z_PROJECTILE
+            )
+            it += Speed(projectileCfg.speed)
+            it += Projectile(
+                source = entity,
+                target = target,
+                originalTargetPosition = target[Transform].position.cpy(),
+                attackCmp.damage,
+                attackCmp.projectileDelay,
+                projectileCfg.scale,
+            )
+            if (projectileCfg.scale > 0f) {
+                // visible projectile
+                it += Animation(AnimationType.IDLE, projectileCfg.gdxAnimations)
+            }
+        }
     }
 }

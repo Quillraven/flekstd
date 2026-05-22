@@ -1,0 +1,40 @@
+package io.github.quillraven.flekstd.system
+
+import com.badlogic.gdx.math.MathUtils
+import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.IteratingSystem
+import com.github.quillraven.fleks.World.Companion.family
+import io.github.quillraven.flekstd.component.Homing
+import io.github.quillraven.flekstd.component.Speed
+import io.github.quillraven.flekstd.component.Transform
+
+class HomingMoveSystem : IteratingSystem(
+    family = family { all(Homing, Speed, Transform) }
+) {
+    override fun onTickEntity(entity: Entity) {
+        val (target, targetPos, onReached) = entity[Homing]
+        val speed = entity[Speed].current
+
+        // update target position if target is still alive
+        if (!target.wasRemoved()) {
+            targetPos.set(target[Transform].position)
+        }
+
+        // move entity towards targetPos
+        val position = entity[Transform].position
+        val dist = targetPos.dst(position)
+
+        val moveDist = speed * deltaTime
+        if (MathUtils.isEqual(dist, 0f, 0.05f) || dist <= moveDist) {
+            // reached target destination -> fire 'onReached' action
+            onReached()
+            return
+        }
+
+        // move towards target position by normalizing the direction vector (dx/dist, dy/dist) and scale by speed
+        position.add(
+            (targetPos.x - position.x) / dist * moveDist,
+            (targetPos.y - position.y) / dist * moveDist,
+        )
+    }
+}

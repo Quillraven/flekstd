@@ -18,6 +18,7 @@ fun animationMapOf(key: String, vararg types: AnimationType): EnumMap<AnimationT
         val sheet = Texture("graphic/$key.png")
         val (tileWidth, tileHeight) = when {
             key.startsWith("lancer") -> 320 to 320
+            key.startsWith("arrow") || key.startsWith("dust") -> 64 to 64
             else -> 192 to 192
         }
         val regions = TextureRegion.split(sheet, tileWidth, tileHeight)

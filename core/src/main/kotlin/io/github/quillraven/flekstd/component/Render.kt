@@ -11,6 +11,7 @@ import ktx.math.vec2
 class Render(
     region: TextureRegion,
     var scale: Float,
+    val color: Color = Color.WHITE.cpy(),
 ) : Component<Render> {
     val regionSize: Vector2 = vec2(region.regionWidth.toWorldUnits(), region.regionHeight.toWorldUnits())
 
@@ -20,8 +21,6 @@ class Render(
             regionSize.y = value.regionHeight.toWorldUnits()
             field = value
         }
-
-    val color: Color = Color.WHITE.cpy()
 
     override fun type() = Render
 

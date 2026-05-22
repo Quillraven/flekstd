@@ -22,5 +22,6 @@ data class Transform(
     companion object : ComponentType<Transform>() {
         const val Z_GROUND = 0
         const val Z_OBJECT = 10
+        const val Z_PROJECTILE = 20
     }
 }
