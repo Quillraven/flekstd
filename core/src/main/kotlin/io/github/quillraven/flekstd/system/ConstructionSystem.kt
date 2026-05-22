@@ -9,6 +9,7 @@ import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
+import com.github.quillraven.fleks.Component
 import io.github.quillraven.flekstd.cfg.TowerCfg
 import io.github.quillraven.flekstd.component.Animation
 import io.github.quillraven.flekstd.component.AnimationType
@@ -75,6 +76,7 @@ class ConstructionSystem(
 
         it += cfg.perimeter()
         it += cfg.attack()
+        it += cfg.effects.map { effect -> effect() as Component<*> }
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {

@@ -24,6 +24,7 @@ import io.github.quillraven.flekstd.system.PerimeterSystem
 import io.github.quillraven.flekstd.system.ProjectileSystem
 import io.github.quillraven.flekstd.system.RenderSystem
 import io.github.quillraven.flekstd.system.RequestCleanupSystem
+import io.github.quillraven.flekstd.system.SlowEffectSystem
 import io.github.quillraven.flekstd.system.SpawnSystem
 import io.github.quillraven.flekstd.system.UiRenderSystem
 import ktx.app.KtxInputAdapter
@@ -55,6 +56,7 @@ class GameScreen(
             add(ProjectileSystem())
             add(HomingMoveSystem())
             add(DamageSystem())
+            add(SlowEffectSystem())
             add(HealthSystem())
             add(AnimationSystem())
             add(RenderSystem())

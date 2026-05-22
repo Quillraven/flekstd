@@ -3,8 +3,10 @@ package io.github.quillraven.flekstd.cfg
 import com.badlogic.gdx.math.Vector2
 import io.github.quillraven.flekstd.component.AnimationType
 import io.github.quillraven.flekstd.component.Attack
+import io.github.quillraven.flekstd.component.DamageEffect
 import io.github.quillraven.flekstd.component.GdxAnimation
 import io.github.quillraven.flekstd.component.Perimeter
+import io.github.quillraven.flekstd.component.SlowEffect
 import ktx.app.gdxError
 import ktx.math.vec2
 import java.util.EnumMap
@@ -14,6 +16,7 @@ data class TowerCfg(
     val attack: () -> Attack,
     val scale: Float,
     val gdxAnimations: EnumMap<AnimationType, GdxAnimation>,
+    val effects: List<() -> DamageEffect> = emptyList(),
 ) {
     companion object {
         fun byTowerKey(key: String): TowerCfg = when (key) {
@@ -60,6 +63,7 @@ data class TowerCfg(
                 },
                 scale = 2.5f,
                 gdxAnimations = animationMapOf("monk", AnimationType.IDLE, AnimationType.ATTACK),
+                effects = listOf({ SlowEffect(percentage = 0.5f, duration = 2f) }),
             )
 
             else -> gdxError("$key is not a tower key")
