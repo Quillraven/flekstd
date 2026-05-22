@@ -45,21 +45,30 @@ class AttackSystem : IteratingSystem(
         attackCmp.timer = attackCmp.cooldown
 
         // spawn projectile entity
+        spawnProjectile(attackCmp, entity, target)
+    }
+
+    private fun spawnProjectile(
+        attackCmp: Attack,
+        tower: Entity,
+        target: Entity
+    ) {
         val projectileCfg = attackCmp.projectileCfg
         world.entity {
             it += Transform(
-                position = entity[Transform].position.cpy().add(attackCmp.projectileOffset),
+                position = tower[Transform].position.cpy().add(attackCmp.projectileOffset),
                 size = vec2(1f, 1f),
                 z = Transform.Z_PROJECTILE
             )
             it += Speed(projectileCfg.speed)
             it += Projectile(
-                source = entity,
+                source = tower,
                 target = target,
                 originalTargetPosition = target[Transform].position.cpy(),
                 attackCmp.damage,
                 attackCmp.projectileDelay,
                 projectileCfg.scale,
+                projectileCfg.flipX,
             )
             if (projectileCfg.scale > 0f) {
                 // visible projectile

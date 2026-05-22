@@ -12,6 +12,7 @@ data class Projectile(
     val damage: Float,
     var delay: Float,
     val scale: Float,
+    val flipX: Boolean,
 ) : Component<Projectile> {
     override fun type() = Projectile
 

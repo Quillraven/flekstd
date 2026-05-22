@@ -13,6 +13,7 @@ class Render(
     var scale: Float,
     val color: Color = Color.WHITE.cpy(),
 ) : Component<Render> {
+    var flipX: Boolean = false
     val regionSize: Vector2 = vec2(region.regionWidth.toWorldUnits(), region.regionHeight.toWorldUnits())
 
     var region: TextureRegion = region
@@ -28,6 +29,7 @@ class Render(
     operator fun component2(): Vector2 = regionSize
     operator fun component3(): Color = color
     operator fun component4(): Float = scale
+    operator fun component5(): Boolean = flipX
 
     companion object : ComponentType<Render>() {
         val EMPTY_REGION = TextureRegion()

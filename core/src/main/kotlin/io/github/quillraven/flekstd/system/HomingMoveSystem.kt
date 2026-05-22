@@ -5,6 +5,8 @@ import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.Homing
+import io.github.quillraven.flekstd.component.Projectile
+import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Speed
 import io.github.quillraven.flekstd.component.Transform
 
@@ -32,9 +34,13 @@ class HomingMoveSystem : IteratingSystem(
         }
 
         // move towards target position by normalizing the direction vector (dx/dist, dy/dist) and scale by speed
-        position.add(
-            (targetPos.x - position.x) / dist * moveDist,
-            (targetPos.y - position.y) / dist * moveDist,
-        )
+        val dx = targetPos.x - position.x
+        val dy = targetPos.y - position.y
+        position.add(dx / dist * moveDist, dy / dist * moveDist)
+
+        // flip rendering if necessary
+        if (entity.getOrNull(Projectile)?.flipX == true) {
+            entity.getOrNull(Render)?.flipX = dx < 0f
+        }
     }
 }
