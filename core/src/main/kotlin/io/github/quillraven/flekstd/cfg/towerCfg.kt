@@ -7,6 +7,7 @@ import io.github.quillraven.flekstd.component.DamageEffect
 import io.github.quillraven.flekstd.component.GdxAnimation
 import io.github.quillraven.flekstd.component.Perimeter
 import io.github.quillraven.flekstd.component.SlowEffect
+import io.github.quillraven.flekstd.component.SplashEffect
 import ktx.app.gdxError
 import ktx.math.vec2
 import java.util.EnumMap
@@ -33,6 +34,7 @@ data class TowerCfg(
                 },
                 scale = 2f,
                 gdxAnimations = animationMapOf("warrior", AnimationType.IDLE, AnimationType.ATTACK),
+                effects = listOf { SplashEffect(radius = 1f, percentage = 0.5f, applyEffects = false) },
             )
 
             "archer" -> TowerCfg(
@@ -63,7 +65,10 @@ data class TowerCfg(
                 },
                 scale = 2.5f,
                 gdxAnimations = animationMapOf("monk", AnimationType.IDLE, AnimationType.ATTACK),
-                effects = listOf({ SlowEffect(percentage = 0.5f, duration = 2f) }),
+                effects = listOf(
+                    { SlowEffect(percentage = 0.5f, duration = 2f) },
+                    { SplashEffect(radius = 2f, percentage = 0.25f, applyEffects = true) },
+                ),
             )
 
             else -> gdxError("$key is not a tower key")
