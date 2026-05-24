@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.ObjectMap
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import com.github.quillraven.fleks.World.Companion.inject
-import com.github.quillraven.fleks.Component
 import io.github.quillraven.flekstd.cfg.TowerCfg
 import io.github.quillraven.flekstd.component.Animation
 import io.github.quillraven.flekstd.component.AnimationType
@@ -79,12 +79,14 @@ class ConstructionSystem(
         it += cfg.effects.map { effect -> effect() as Component<*> }
     }
 
+    // return false to also notify scene2d stage
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
         mouseWorldPos.set(screenX.toFloat(), screenY.toFloat())
         gameViewport.unproject(mouseWorldPos)
-        return true
+        return false
     }
 
+    // return false to also notify scene2d stage
     override fun touchDown(
         screenX: Int,
         screenY: Int,
@@ -103,8 +105,6 @@ class ConstructionSystem(
                     towerEntity[Render].color.set(Color.WHITE)
                 }
             }
-
-            return true
         }
         return false
     }

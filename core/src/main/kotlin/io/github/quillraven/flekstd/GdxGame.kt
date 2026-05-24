@@ -6,18 +6,21 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import io.github.quillraven.flekstd.screen.GameScreen
+import io.github.quillraven.flekstd.ui.GameSkin
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 
 class GdxGame : KtxGame<KtxScreen>() {
     val batch: Batch by lazy { SpriteBatch() }
     val gameViewport: Viewport = FitViewport(16f, 9f)
-    val uiViewport: Viewport = FitViewport(1280f, 720f)
+    val uiViewport: Viewport = FitViewport(1920f, 1080f)
     val stage: Stage by lazy { Stage(uiViewport, batch) }
+    val skin: Skin by lazy { GameSkin() }
     val inputMultiplexer = InputMultiplexer()
 
     override fun create() {
@@ -43,6 +46,7 @@ class GdxGame : KtxGame<KtxScreen>() {
         super.dispose()
         batch.dispose()
         stage.dispose()
+        skin.dispose()
     }
 
     companion object {

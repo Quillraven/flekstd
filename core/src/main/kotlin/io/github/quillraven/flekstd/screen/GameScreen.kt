@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.github.quillraven.fleks.World
 import com.github.quillraven.fleks.configureWorld
@@ -27,6 +28,7 @@ import io.github.quillraven.flekstd.system.RequestCleanupSystem
 import io.github.quillraven.flekstd.system.SlowEffectSystem
 import io.github.quillraven.flekstd.system.SpawnSystem
 import io.github.quillraven.flekstd.system.UiRenderSystem
+import io.github.quillraven.flekstd.ui.GameUI
 import ktx.app.KtxInputAdapter
 import ktx.app.KtxScreen
 
@@ -36,6 +38,7 @@ class GameScreen(
     private val batch: Batch = game.batch,
     private val stage: Stage = game.stage,
     private val inputMultiplexer: InputMultiplexer = game.inputMultiplexer,
+    private val skin: Skin = game.skin,
 ) : KtxScreen {
     private val world = ecsWorld()
 
@@ -70,6 +73,9 @@ class GameScreen(
             it += LevelChangeRequest("level_1")
         }
         world.systems.filterIsInstance<KtxInputAdapter>().forEach { inputMultiplexer.addProcessor(it) }
+
+        stage.addActor(GameUI(skin))
+        inputMultiplexer.addProcessor(stage)
     }
 
     override fun hide() {
@@ -103,6 +109,11 @@ class GameScreen(
             Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) -> {
                 world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
                 world.system<ConstructionSystem>().spawnConstructionTower("monk")
+            }
+
+            Gdx.input.isKeyJustPressed(Input.Keys.R) -> {
+                stage.clear()
+                stage.addActor(GameUI(skin))
             }
         }
     }
