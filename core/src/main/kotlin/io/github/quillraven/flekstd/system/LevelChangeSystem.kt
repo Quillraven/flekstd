@@ -69,19 +69,19 @@ class LevelChangeSystem : IteratingSystem(
         // parse wave info
         val wavesInfo = gdxArrayOf<WaveInfo>()
         repeat(spawnTimeSplits.size) { idx ->
-            val (numEntities, entityType) = wavesSplits[idx].split(":")
+            val [numEntities, entityType] = wavesSplits[idx].split(":")
             val time = spawnTimeSplits[idx].trim().toFloat()
             wavesInfo.add(WaveInfo(numEntities.trim().toInt(), entityType.trim(), time))
         }
         // parse start
-        val (startX, startY) = startLine.substringAfter("start=").split(",").map { it.trim() }
+        val [startX, startY] = startLine.substringAfter("start=").split(",").map { it.trim() }
         val start = vec2(startX.toFloat(), startY.toFloat())
         // parse path info
         val pathSplit = pathLine.substringAfter("path=").split(",").map { it.trim() }
         val path = gdxArrayOf<Vector2>(start.cpy())
         val waypoint = start.cpy()
         var currentDirection = pathSplit.first()
-        for ((index, direction) in pathSplit.withIndex()) {
+        for ([index, direction] in pathSplit.withIndex()) {
             if (direction != currentDirection) {
                 path.add(waypoint.cpy())
                 currentDirection = direction

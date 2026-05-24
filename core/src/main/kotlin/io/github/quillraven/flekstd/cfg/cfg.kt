@@ -16,7 +16,7 @@ import java.util.EnumMap
 fun animationMapOf(key: String, vararg types: AnimationType): EnumMap<AnimationType, GdxAnimation> {
     fun getAnimation(key: String): GdxAnimation {
         val sheet = Texture("graphic/$key.png")
-        val (tileWidth, tileHeight) = when {
+        val [tileWidth, tileHeight] = when {
             key.startsWith("lancer") -> 320 to 320
             key.startsWith("arrow") || key.startsWith("dust") -> 64 to 64
             else -> 192 to 192

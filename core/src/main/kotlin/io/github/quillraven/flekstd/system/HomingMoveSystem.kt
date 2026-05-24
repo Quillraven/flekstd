@@ -14,17 +14,17 @@ class HomingMoveSystem : IteratingSystem(
     family = family { all(Homing, Speed, Transform) }
 ) {
     override fun onTickEntity(entity: Entity) {
-        val (target, targetPos, onReached) = entity[Homing]
+        val (target, targetPosition, onReached) = entity[Homing]
         val speed = entity[Speed].current
 
         // update target position if target is still alive
         if (!target.wasRemoved()) {
-            targetPos.set(target[Transform].position)
+            targetPosition.set(target[Transform].position)
         }
 
-        // move entity towards targetPos
+        // move entity towards targetPosition
         val position = entity[Transform].position
-        val dist = targetPos.dst(position)
+        val dist = targetPosition.dst(position)
 
         val moveDist = speed * deltaTime
         if (MathUtils.isEqual(dist, 0f, 0.05f) || dist <= moveDist) {
@@ -34,8 +34,8 @@ class HomingMoveSystem : IteratingSystem(
         }
 
         // move towards target position by normalizing the direction vector (dx/dist, dy/dist) and scale by speed
-        val dx = targetPos.x - position.x
-        val dy = targetPos.y - position.y
+        val dx = targetPosition.x - position.x
+        val dy = targetPosition.y - position.y
         position.add(dx / dist * moveDist, dy / dist * moveDist)
 
         // flip rendering if necessary

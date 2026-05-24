@@ -18,7 +18,7 @@ class TowerTable(skin: Skin) : Table(skin) {
             GameSkin.STYLE_ARCHER_BTN to "archer",
             GameSkin.STYLE_MONK_BTN to "monk",
         )
-        towers.forEachIndexed { index, (styleName, towerKey) ->
+        towers.forEachIndexed { index, [styleName, towerKey] ->
             // selection cursor on top of tower avatar
             val cursor = Image(skin.getDrawable(GameSkin.CURSOR_SELECT))
             cursor.isVisible = false

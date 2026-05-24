@@ -16,7 +16,7 @@ class EnemyTable(skin: Skin) : Table(skin) {
             Triple(GameSkin.AVATAR_PAWN, "pawn", 5),
             Triple(GameSkin.AVATAR_LANCER, "lancer", 1),
         )
-        enemies.forEach { (styleName, enemyKey, count) -> add(enemyTable(enemyKey, styleName, count)) }
+        enemies.forEach { [styleName, enemyKey, count] -> add(enemyTable(enemyKey, styleName, count)) }
 
         pack()
     }

@@ -32,7 +32,7 @@ class PerimeterSystem(
 
         if (!perimeterCmp.target.wasRemoved()) {
             // valid target -> check if it is out of range
-            val (targetPos, targetSize) = perimeterCmp.target[Transform]
+            val [targetPos, targetSize] = perimeterCmp.target[Transform]
             val targetCenterX = targetPos.x + targetSize.x * 0.5f
             val targetCenterY = targetPos.y + targetSize.y * 0.5f
             if (perimeterRect.contains(targetCenterX, targetCenterY)) {
@@ -43,7 +43,7 @@ class PerimeterSystem(
 
         // target is out of range or no target set yet -> find a new target
         perimeterCmp.target = enemies.firstOrNull { enemy ->
-            val (enemyPos, enemySize) = enemy[Transform]
+            val [enemyPos, enemySize] = enemy[Transform]
             val enemyCenterX = enemyPos.x + enemySize.x * 0.5f
             val enemyCenterY = enemyPos.y + enemySize.y * 0.5f
             perimeterRect.contains(enemyCenterX, enemyCenterY)
