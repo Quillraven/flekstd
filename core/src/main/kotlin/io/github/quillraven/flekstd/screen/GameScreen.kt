@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.github.quillraven.fleks.World
 import com.github.quillraven.fleks.configureWorld
 import io.github.quillraven.flekstd.GdxGame
+import io.github.quillraven.flekstd.cfg.EnemyCfg
 import io.github.quillraven.flekstd.component.LevelChangeRequest
 import io.github.quillraven.flekstd.component.Spawn
 import io.github.quillraven.flekstd.component.Tag
@@ -37,9 +38,10 @@ class GameScreen(
     private val batch: Batch = game.batch,
     private val stage: Stage = game.stage,
     private val inputMultiplexer: InputMultiplexer = game.inputMultiplexer,
-    private val skin: Skin = game.skin,
+    skin: Skin = game.skin,
 ) : KtxScreen {
     private val world = ecsWorld()
+    private val gameUI = GameUI(skin, onTowerClicked = this::constructTower, onSpawnClicked = this::spawnWave)
 
     private fun ecsWorld(): World = configureWorld {
         injectables {
@@ -51,7 +53,7 @@ class GameScreen(
         systems {
             add(LevelChangeSystem())
             add(ConstructionSystem())
-            add(SpawnSystem())
+            add(SpawnSystem(onWaveDone = this@GameScreen::waveComplete))
             add(FollowPathSystem())
             add(PerimeterSystem())
             add(AttackSystem())
@@ -75,7 +77,6 @@ class GameScreen(
         world.systems.filterIsInstance<KtxInputAdapter>().forEach { inputMultiplexer.addProcessor(it) }
 
         // setup UI
-        val gameUI = GameUI(skin, onTowerClicked = this::constructTower, onSpawnClicked = this::spawnWave)
         stage.addActor(gameUI)
         inputMultiplexer.addProcessor(stage)
     }
@@ -87,10 +88,22 @@ class GameScreen(
 
     fun spawnWave(enemies: ObjectMap<String, Int>) {
         world.family { all(Spawn) }.forEach { entity ->
-            entity.configure {
-                it += Tag.SPAWNING
-            }
+            val spawnCmp = entity[Spawn]
+            spawnCmp.queue.clear()
+            spawnCmp.timer = 0f
+
+            // expand each enemy key by its count, then sort by health base ascending
+            enemies.entries()
+                .flatMap { entry -> List(entry.value) { entry.key } }
+                .sortedBy { key -> EnemyCfg.byEnemyKey(key).health().base }
+                .forEach { spawnCmp.queue.addLast(it) }
+
+            entity.configure { it += Tag.SPAWNING }
         }
+    }
+
+    fun waveComplete() {
+        gameUI.enableSpawning()
     }
 
     override fun hide() {

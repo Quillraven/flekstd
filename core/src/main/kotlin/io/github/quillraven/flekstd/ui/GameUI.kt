@@ -9,12 +9,19 @@ class GameUI(
     onTowerClicked: (towerKey: String) -> Unit,
     onSpawnClicked: (enemies: ObjectMap<String, Int>) -> Unit,
 ) : Table(skin) {
+    private val spawnWaveTable: SpawnWaveTable
+
     init {
         setFillParent(true)
         pad(10f).bottom()
         add(TowerTable(skin, onTowerClicked)).left().bottom()
-        add(SpawnWaveTable(skin, onSpawnClicked)).center().bottom().expandX()
+        spawnWaveTable = SpawnWaveTable(skin, onSpawnClicked)
+        add(spawnWaveTable).center().bottom().expandX()
         add(EnemyTable(skin)).right().bottom()
         pack()
+    }
+
+    fun enableSpawning() {
+        spawnWaveTable.enableSpawning()
     }
 }

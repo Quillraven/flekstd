@@ -16,41 +16,27 @@ import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_OBJECT
 import ktx.collections.GdxArray
 import ktx.collections.getOrPut
-import ktx.log.logger
 import ktx.math.vec2
 
-class SpawnSystem : IteratingSystem(
+class SpawnSystem(private val onWaveDone: () -> Unit) : IteratingSystem(
     family = family { all(Spawn, Tag.SPAWNING) }
 ) {
     private val enemyCfgCache: ObjectMap<String, EnemyCfg> = ObjectMap()
 
     override fun onTickEntity(entity: Entity) {
         val spawnCmp = entity[Spawn]
-        val currentWaveInfo = spawnCmp.currentWaveInfo
-        if (spawnCmp.numSpawns >= spawnCmp.currentWaveInfo.amount) {
-            // all entities of this wave have been spawned -> wait for next wave
-            spawnCmp.nextWave()
-            log.debug { "Wave ${spawnCmp.waveIdx} of ${spawnCmp.wavesInfo.size} finished" }
-            if (spawnCmp.waveIdx >= spawnCmp.wavesInfo.size) {
-                // all waves have been spawned -> remove spawning entity
-                log.debug { "All waves finished" }
-                entity.remove()
-            }
-            entity.configure { it -= Tag.SPAWNING }
-            return
-        }
 
-        // update timer and wave index
         spawnCmp.timer += deltaTime
-        if (spawnCmp.timer < currentWaveInfo.interval) {
-            // not enough time has passed yet -> do nothing
-            return
-        }
+        if (spawnCmp.timer < SPAWN_INTERVAL) return
         spawnCmp.timer = 0f
-        spawnCmp.numSpawns++
 
-        // spawn a new entity
-        spawnEnemy(spawnCmp.path, currentWaveInfo.type)
+        val enemyKey = spawnCmp.queue.removeIndex(0)
+        spawnEnemy(spawnCmp.path, enemyKey)
+
+        if (spawnCmp.queue.isEmpty) {
+            entity.configure { it -= Tag.SPAWNING }
+            onWaveDone()
+        }
     }
 
     private fun spawnEnemy(
@@ -77,6 +63,6 @@ class SpawnSystem : IteratingSystem(
     }
 
     companion object {
-        private val log = logger<SpawnSystem>()
+        const val SPAWN_INTERVAL = 1f
     }
 }

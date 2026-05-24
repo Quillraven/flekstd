@@ -20,18 +20,26 @@ class SpawnWaveTable(
 
         btn = TextButton("Spawn Wave", skin, GameSkin.STYLE_SPAWN_BTN).apply {
             label.setAlignment(Align.center)
-            onClick { onSpawnClicked() }
+            onClick { onSpawnButtonClicked() }
         }
         add(btn)
 
         pack()
     }
 
-    private fun onSpawnClicked() {
+    private fun onSpawnButtonClicked() {
         btn.isDisabled = true
         btn.touchable = Touchable.disabled
+        btn.color.a = 0.5f
 
+        val enemyTable = this.parent.children.single { it is EnemyTable } as EnemyTable
+        val enemyInfo: ObjectMap<String, Int> = enemyTable.getEnemyInfo()
+        this.onSpawnClicked(enemyInfo)
+    }
 
-        println("Spawn Wave clicked")
+    fun enableSpawning() {
+        btn.isDisabled = false
+        btn.touchable = Touchable.enabled
+        btn.color.a = 1f
     }
 }

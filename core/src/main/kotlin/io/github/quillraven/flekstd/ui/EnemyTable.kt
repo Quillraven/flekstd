@@ -5,7 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.ObjectMap
 import ktx.actors.onClick
+import ktx.collections.set
 
 class EnemyTable(skin: Skin) : Table(skin) {
     init {
@@ -46,5 +48,16 @@ class EnemyTable(skin: Skin) : Table(skin) {
             add(countLabel).width(30f)
             add(arrowUp).size(36f, 36f)
         }
+    }
+
+    fun getEnemyInfo(): ObjectMap<String, Int> {
+        val enemies = ObjectMap<String, Int>()
+
+        val labels = children.filterIsInstance<Table>().flatMap { it.children.filterIsInstance<Label>() }
+        labels.forEach { label ->
+            enemies[label.userObject as String] = label.text.toString().toInt()
+        }
+
+        return enemies
     }
 }

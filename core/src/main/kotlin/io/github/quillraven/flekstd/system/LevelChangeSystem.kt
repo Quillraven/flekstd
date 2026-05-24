@@ -12,7 +12,6 @@ import io.github.quillraven.flekstd.component.Spawn
 import io.github.quillraven.flekstd.component.Tag
 import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_GROUND
-import io.github.quillraven.flekstd.component.WaveInfo
 import ktx.app.gdxError
 import ktx.assets.toInternalFile
 import ktx.collections.gdxArrayOf
@@ -43,7 +42,7 @@ class LevelChangeSystem : IteratingSystem(
     }
 
     private fun createGroundEntities(lines: List<String>) {
-        val linesToSkip = 4 // waveInfo, spawnTime, path, ...
+        val linesToSkip = 2 // path, start spawn location
         val mapHeight = lines.size - linesToSkip - 1
         lines.forEachIndexed { y, line ->
             if (y < linesToSkip) return@forEachIndexed
@@ -55,24 +54,9 @@ class LevelChangeSystem : IteratingSystem(
     }
 
     private fun createSpawnEntity(lines: List<String>) {
-        val waveInfoLine = lines[0]
-        val spawnTimeLine = lines[1]
-        val pathLine = lines[2]
-        val startLine = lines[3]
+        val pathLine = lines[0]
+        val startLine = lines[1]
 
-        val wavesSplits = waveInfoLine.substringAfter("waves=").split(",")
-        val spawnTimeSplits = spawnTimeLine.substringAfter("spawnTime=").split(",")
-        if (wavesSplits.size != spawnTimeSplits.size) {
-            gdxError("'waves' (${wavesSplits.size} and 'spawnTime' (${spawnTimeSplits.size} info must have the same number of entries")
-        }
-
-        // parse wave info
-        val wavesInfo = gdxArrayOf<WaveInfo>()
-        repeat(spawnTimeSplits.size) { idx ->
-            val [numEntities, entityType] = wavesSplits[idx].split(":")
-            val time = spawnTimeSplits[idx].trim().toFloat()
-            wavesInfo.add(WaveInfo(numEntities.trim().toInt(), entityType.trim(), time))
-        }
         // parse start
         val [startX, startY] = startLine.substringAfter("start=").split(",").map { it.trim() }
         val start = vec2(startX.toFloat(), startY.toFloat())
@@ -101,7 +85,7 @@ class LevelChangeSystem : IteratingSystem(
 
         // create spawn entity
         world.entity {
-            it += Spawn(path, wavesInfo)
+            it += Spawn(path)
         }
     }
 
