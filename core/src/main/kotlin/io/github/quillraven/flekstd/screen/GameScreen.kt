@@ -1,11 +1,10 @@
 package io.github.quillraven.flekstd.screen
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.utils.ObjectMap
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.github.quillraven.fleks.World
 import com.github.quillraven.fleks.configureWorld
@@ -69,13 +68,29 @@ class GameScreen(
     }
 
     override fun show() {
+        // change to first level
         world.entity {
             it += LevelChangeRequest("level_1")
         }
         world.systems.filterIsInstance<KtxInputAdapter>().forEach { inputMultiplexer.addProcessor(it) }
 
-        stage.addActor(GameUI(skin))
+        // setup UI
+        val gameUI = GameUI(skin, onTowerClicked = this::constructTower, onSpawnClicked = this::spawnWave)
+        stage.addActor(gameUI)
         inputMultiplexer.addProcessor(stage)
+    }
+
+    fun constructTower(towerKey: String) {
+        world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
+        world.system<ConstructionSystem>().spawnConstructionTower(towerKey)
+    }
+
+    fun spawnWave(enemies: ObjectMap<String, Int>) {
+        world.family { all(Spawn) }.forEach { entity ->
+            entity.configure {
+                it += Tag.SPAWNING
+            }
+        }
     }
 
     override fun hide() {
@@ -85,37 +100,6 @@ class GameScreen(
 
     override fun render(delta: Float) {
         world.update(delta)
-
-        // later on replaced by a UI button
-        when {
-            Gdx.input.isKeyJustPressed(Input.Keys.ENTER) -> {
-                world.family { all(Spawn) }.forEach { entity ->
-                    entity.configure {
-                        it += Tag.SPAWNING
-                    }
-                }
-            }
-
-            Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) -> {
-                world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
-                world.system<ConstructionSystem>().spawnConstructionTower("warrior")
-            }
-
-            Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) -> {
-                world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
-                world.system<ConstructionSystem>().spawnConstructionTower("archer")
-            }
-
-            Gdx.input.isKeyJustPressed(Input.Keys.NUM_3) -> {
-                world.family { all(Tag.CONSTRUCTING) }.forEach { it.remove() }
-                world.system<ConstructionSystem>().spawnConstructionTower("monk")
-            }
-
-            Gdx.input.isKeyJustPressed(Input.Keys.R) -> {
-                stage.clear()
-                stage.addActor(GameUI(skin))
-            }
-        }
     }
 
     override fun dispose() {

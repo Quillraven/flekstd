@@ -8,7 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onClick
 
-class TowerTable(skin: Skin) : Table(skin) {
+class TowerTable(
+    skin: Skin,
+    private val onTowerClicked: (towerKey: String) -> Unit
+) : Table(skin) {
     init {
         background = skin.getDrawable(GameSkin.RIBBON_YELLOW)
         pad(-20f, 0f, -10f, 100f)
@@ -41,9 +44,7 @@ class TowerTable(skin: Skin) : Table(skin) {
             // tower button
             val towerBtn = ImageButton(skin, styleName)
             towerBtn.imageCell.size(80f, 80f)
-            towerBtn.onClick {
-                onTowerClicked(towerBtn, towerKey)
-            }
+            towerBtn.onClick { onTowerButtonClicked(towerBtn, towerKey) }
 
             val stack = Stack(towerBtn, cursor)
             stack.pack()
@@ -55,7 +56,7 @@ class TowerTable(skin: Skin) : Table(skin) {
         pack()
     }
 
-    private fun onTowerClicked(towerBtn: ImageButton, towerKey: String) {
+    private fun onTowerButtonClicked(towerBtn: ImageButton, towerKey: String) {
         // hide all selection cursors
         this.children.filterIsInstance<Stack>().forEach { stack ->
             stack.getChild(1).isVisible = false
@@ -63,6 +64,7 @@ class TowerTable(skin: Skin) : Table(skin) {
         // show current selection
         towerBtn.parent.getChild(1).isVisible = true
 
-        println("Tower $towerKey clicked")
+        // call lambda
+        this.onTowerClicked(towerKey)
     }
 }

@@ -93,7 +93,7 @@ class ConstructionSystem(
         pointer: Int,
         button: Int
     ): Boolean {
-        if (button == Input.Buttons.LEFT) {
+        if (button == Input.Buttons.RIGHT) {
             // construct the tower
             mouseMoved(screenX, screenY)
 
