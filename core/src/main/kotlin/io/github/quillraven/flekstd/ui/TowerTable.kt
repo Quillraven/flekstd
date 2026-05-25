@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onClick
+import ktx.actors.onClickEvent
 
 class TowerTable(
     skin: Skin,
@@ -44,7 +45,10 @@ class TowerTable(
             // tower button
             val towerBtn = ImageButton(skin, styleName)
             towerBtn.imageCell.size(80f, 80f)
-            towerBtn.onClick { onTowerButtonClicked(towerBtn, towerKey) }
+            towerBtn.onClickEvent { event ->
+                event.handle()
+                onTowerButtonClicked(towerBtn, towerKey)
+            }
 
             val stack = Stack(towerBtn, cursor)
             stack.pack()

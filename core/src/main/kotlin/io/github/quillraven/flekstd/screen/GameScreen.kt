@@ -75,15 +75,17 @@ class GameScreen(
     }
 
     override fun show() {
+        // setup UI
+        stage.addActor(gameUI)
+        // add stage as first processor so that it can stop events from propagating to systems.
+        // e.g. a click event on a button
+        inputMultiplexer.addProcessor(stage)
+
         // change to first level
         world.entity {
             it += LevelChangeRequest("level_1")
         }
         world.systems.filterIsInstance<KtxInputAdapter>().forEach { inputMultiplexer.addProcessor(it) }
-
-        // setup UI
-        stage.addActor(gameUI)
-        inputMultiplexer.addProcessor(stage)
     }
 
     fun constructTower(towerKey: String) {

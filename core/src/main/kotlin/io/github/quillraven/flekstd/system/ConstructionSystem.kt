@@ -79,21 +79,21 @@ class ConstructionSystem(
         it += cfg.effects.map { effect -> effect() as Component<*> }
     }
 
-    // return false to also notify scene2d stage
+    // return false to also notify other processors
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
         mouseWorldPos.set(screenX.toFloat(), screenY.toFloat())
         gameViewport.unproject(mouseWorldPos)
         return false
     }
 
-    // return false to also notify scene2d stage
+    // return false to also notify other processors
     override fun touchDown(
         screenX: Int,
         screenY: Int,
         pointer: Int,
         button: Int
     ): Boolean {
-        if (button == Input.Buttons.RIGHT) {
+        if (button == Input.Buttons.LEFT) {
             // construct the tower
             mouseMoved(screenX, screenY)
 
