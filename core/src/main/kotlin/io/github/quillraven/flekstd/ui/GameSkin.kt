@@ -22,6 +22,8 @@ class GameSkin : Skin() {
         add(RIBBON_GRAY, Texture("ui/ribbon_gray.png"))
         add(RIBBON_YELLOW, Texture("ui/ribbon_yellow.png"))
         add(RIBBON_TEAL, Texture("ui/ribbon_small_teal.png"))
+        add(SWORD_PURPLE, Texture("ui/sword_purple.png"))
+        add(BANNER, Texture("ui/banner.png"))
         add(AVATAR_WARRIOR, Texture("ui/avatar_warrior.png"))
         add(AVATAR_ARCHER, Texture("ui/avatar_archer.png"))
         add(AVATAR_MONK, Texture("ui/avatar_monk.png"))
@@ -42,6 +44,11 @@ class GameSkin : Skin() {
         add(STYLE_WARRIOR_BTN, ImageButtonStyle().apply { imageUp = getDrawable(AVATAR_WARRIOR) })
         add(STYLE_ARCHER_BTN, ImageButtonStyle().apply { imageUp = getDrawable(AVATAR_ARCHER) })
         add(STYLE_MONK_BTN, ImageButtonStyle().apply { imageUp = getDrawable(AVATAR_MONK) })
+        add(STYLE_MENU_BTN, TextButtonStyle().apply {
+            font = getFont(FONT_DEFAULT)
+            fontColor = Color.BLACK
+            up = getDrawable(SWORD_PURPLE)
+        })
     }
 
     companion object {
@@ -49,6 +56,8 @@ class GameSkin : Skin() {
         const val RIBBON_GRAY = "ribbon_gray"
         const val RIBBON_YELLOW = "ribbon_yellow"
         const val RIBBON_TEAL = "ribbon_teal"
+        const val SWORD_PURPLE = "sword_purple"
+        const val BANNER = "banner"
         private const val AVATAR_WARRIOR = "avatar_warrior"
         private const val AVATAR_ARCHER = "avatar_archer"
         private const val AVATAR_MONK = "avatar_monk"
@@ -70,5 +79,6 @@ class GameSkin : Skin() {
         const val STYLE_WARRIOR_BTN = "warrior"
         const val STYLE_ARCHER_BTN = "archer"
         const val STYLE_MONK_BTN = "monk"
+        const val STYLE_MENU_BTN = "menu"
     }
 }

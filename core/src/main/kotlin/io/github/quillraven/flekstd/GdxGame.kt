@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import io.github.quillraven.flekstd.screen.GameScreen
+import io.github.quillraven.flekstd.screen.MainMenuScreen
 import io.github.quillraven.flekstd.ui.GameSkin
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
@@ -29,8 +30,9 @@ class GdxGame : KtxGame<KtxScreen>() {
         Gdx.app.logLevel = Application.LOG_DEBUG
         Gdx.input.inputProcessor = inputMultiplexer
 
+        addScreen(MainMenuScreen(this))
         addScreen(GameScreen(this))
-        setScreen<GameScreen>()
+        setScreen<MainMenuScreen>()
     }
 
     override fun resize(width: Int, height: Int) {
