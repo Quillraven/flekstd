@@ -2,6 +2,7 @@ package io.github.quillraven.flekstd.screen
 
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.ObjectMap
@@ -23,6 +24,7 @@ import io.github.quillraven.flekstd.system.HomingMoveSystem
 import io.github.quillraven.flekstd.system.LevelChangeSystem
 import io.github.quillraven.flekstd.system.PerimeterSystem
 import io.github.quillraven.flekstd.system.ProjectileSystem
+import io.github.quillraven.flekstd.system.RangeRenderSystem
 import io.github.quillraven.flekstd.system.RenderSystem
 import io.github.quillraven.flekstd.system.RequestCleanupSystem
 import io.github.quillraven.flekstd.system.SlowEffectSystem
@@ -36,6 +38,7 @@ class GameScreen(
     game: GdxGame,
     private val gameViewport: Viewport = game.gameViewport,
     private val batch: Batch = game.batch,
+    private val shapeRenderer: ShapeRenderer = game.shapeRenderer,
     private val stage: Stage = game.stage,
     private val inputMultiplexer: InputMultiplexer = game.inputMultiplexer,
     skin: Skin = game.skin,
@@ -46,6 +49,7 @@ class GameScreen(
     private fun ecsWorld(): World = configureWorld {
         injectables {
             add(batch)
+            add(shapeRenderer)
             add(stage)
             add(gameViewport)
         }
@@ -64,6 +68,7 @@ class GameScreen(
             add(HealthSystem())
             add(AnimationSystem())
             add(RenderSystem())
+            add(RangeRenderSystem())
             add(UiRenderSystem())
             add(RequestCleanupSystem())
         }

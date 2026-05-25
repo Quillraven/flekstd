@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.ScreenUtils
@@ -17,6 +18,7 @@ import ktx.app.KtxScreen
 
 class GdxGame : KtxGame<KtxScreen>() {
     val batch: Batch by lazy { SpriteBatch() }
+    val shapeRenderer: ShapeRenderer by lazy { ShapeRenderer() }
     val gameViewport: Viewport = FitViewport(16f, 9f)
     val uiViewport: Viewport = FitViewport(1920f, 1080f)
     val stage: Stage by lazy { Stage(uiViewport, batch) }
@@ -45,6 +47,7 @@ class GdxGame : KtxGame<KtxScreen>() {
     override fun dispose() {
         super.dispose()
         batch.dispose()
+        shapeRenderer.dispose()
         stage.dispose()
         skin.dispose()
     }
