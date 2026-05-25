@@ -1,12 +1,12 @@
 package io.github.quillraven.flekstd.ui
 
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import ktx.actors.onClick
 import ktx.actors.onClickEvent
 
 class TowerTable(
@@ -25,6 +25,7 @@ class TowerTable(
         towers.forEachIndexed { index, [styleName, towerKey] ->
             // selection cursor on top of tower avatar
             val cursor = Image(skin.getDrawable(GameSkin.CURSOR_SELECT))
+            cursor.touchable = Touchable.disabled
             cursor.isVisible = false
             cursor.setScale(0.5f)
             cursor.addAction(
