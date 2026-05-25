@@ -25,6 +25,7 @@ import io.github.quillraven.flekstd.system.LevelChangeSystem
 import io.github.quillraven.flekstd.system.PerimeterSystem
 import io.github.quillraven.flekstd.system.ProjectileSystem
 import io.github.quillraven.flekstd.system.RangeRenderSystem
+import io.github.quillraven.flekstd.system.RemoveSystem
 import io.github.quillraven.flekstd.system.RenderSystem
 import io.github.quillraven.flekstd.system.RequestCleanupSystem
 import io.github.quillraven.flekstd.system.SlowEffectSystem
@@ -71,6 +72,7 @@ class GameScreen(
             add(RangeRenderSystem())
             add(UiRenderSystem())
             add(RequestCleanupSystem())
+            add(RemoveSystem())
         }
     }
 
