@@ -15,28 +15,26 @@ class TowerTable(
 ) : Table(skin) {
     init {
         background = skin.getDrawable(GameSkin.RIBBON_YELLOW)
-        pad(-20f, 0f, -10f, 100f)
 
         val towers = listOf(
             GameSkin.STYLE_WARRIOR_BTN to "warrior",
             GameSkin.STYLE_ARCHER_BTN to "archer",
             GameSkin.STYLE_MONK_BTN to "monk",
         )
-        towers.forEachIndexed { index, [styleName, towerKey] ->
+        towers.forEach { [styleName, towerKey] ->
             // selection cursor on top of tower avatar
             val cursor = Image(skin.getDrawable(GameSkin.CURSOR_SELECT))
             cursor.touchable = Touchable.disabled
             cursor.isVisible = false
-            cursor.setScale(0.5f)
             cursor.addAction(
                 Actions.forever(
                     Actions.sequence(
                         Actions.parallel(
-                            Actions.scaleTo(0.65f, 0.65f, 0.25f),
+                            Actions.scaleBy(0.15f, 0.15f, 0.25f),
                             Actions.moveBy(-5f, -5f, 0.25f)
                         ),
                         Actions.parallel(
-                            Actions.scaleTo(0.5f, 0.5f, 0.25f),
+                            Actions.scaleBy(-0.15f, -0.15f, 0.25f),
                             Actions.moveBy(5f, 5f, 0.25f)
                         ),
                     )
@@ -45,20 +43,14 @@ class TowerTable(
 
             // tower button
             val towerBtn = ImageButton(skin, styleName)
-            towerBtn.imageCell.size(80f, 80f)
             towerBtn.onClickEvent { event ->
-                event.handle()
+                event.handle() // avoid calling ConstructionSystem
                 onTowerButtonClicked(towerBtn, towerKey)
             }
 
             val stack = Stack(towerBtn, cursor)
-            stack.pack()
-            stack.getChild(1).moveBy(30f, 30f)
-
-            add(stack).padRight(-40f).padLeft(if (index == 0) 70f else 0f)
+            add(stack).size(80f).padBottom(10f)
         }
-
-        pack()
     }
 
     private fun onTowerButtonClicked(towerBtn: ImageButton, towerKey: String) {

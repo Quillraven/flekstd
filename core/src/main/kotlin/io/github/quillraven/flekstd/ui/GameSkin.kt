@@ -47,7 +47,10 @@ class GameSkin : Skin() {
         add(STYLE_MENU_BTN, TextButtonStyle().apply {
             font = getFont(FONT_DEFAULT)
             fontColor = Color.BLACK
-            up = getDrawable(SWORD_PURPLE)
+            up = getDrawable(SWORD_PURPLE).apply {
+                // add some padding to the left to avoid that the text starts inside the grip of the sword
+                setPadding(0f, 40f, 0f, 0f)
+            }
         })
     }
 

@@ -16,15 +16,14 @@ class SpawnWaveTable(
 
     init {
         background = skin.getDrawable(GameSkin.RIBBON_TEAL)
-        pad(5f, 60f, 15f, 60f)
 
         btn = TextButton("Spawn Wave", skin, GameSkin.STYLE_SPAWN_BTN).apply {
             label.setAlignment(Align.center)
             onClick { onSpawnButtonClicked() }
         }
-        add(btn)
-
-        pack()
+        add().width(55f) // make ribbon background a little wider to the left
+        add(btn).padBottom(10f)
+        add().width(55f) // make ribbon background a little wider to the right
     }
 
     private fun onSpawnButtonClicked() {

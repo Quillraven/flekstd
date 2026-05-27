@@ -18,7 +18,6 @@ class GameUI(
         spawnWaveTable = SpawnWaveTable(skin, onSpawnClicked)
         add(spawnWaveTable).center().bottom().expandX()
         add(EnemyTable(skin)).right().bottom()
-        pack()
     }
 
     fun enableSpawning() {

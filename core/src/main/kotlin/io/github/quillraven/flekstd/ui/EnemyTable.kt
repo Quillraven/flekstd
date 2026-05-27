@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.ObjectMap
 import ktx.actors.onClick
 import ktx.collections.set
@@ -12,15 +13,16 @@ import ktx.collections.set
 class EnemyTable(skin: Skin) : Table(skin) {
     init {
         background = skin.getDrawable(GameSkin.RIBBON_GRAY)
-        pad(-20f, 120f, -10f, 120f)
 
         val enemies = listOf(
             Triple(GameSkin.AVATAR_PAWN, "pawn", 5),
             Triple(GameSkin.AVATAR_LANCER, "lancer", 1),
         )
-        enemies.forEach { [styleName, enemyKey, count] -> add(enemyTable(enemyKey, styleName, count)) }
-
-        pack()
+        add().width(90f)
+        enemies.forEach { [styleName, enemyKey, count] ->
+            add(enemyTable(enemyKey, styleName, count)).padBottom(10f)
+        }
+        add().width(100f)
     }
 
     private fun enemyTable(
@@ -29,6 +31,7 @@ class EnemyTable(skin: Skin) : Table(skin) {
         count: Int,
     ): Table {
         val countLabel = Label("$count", skin, GameSkin.STYLE_LABEL).apply {
+            setAlignment(Align.center)
             userObject = enemyKey
         }
         val arrowDown = ImageButton(skin, GameSkin.STYLE_ARROW_DOWN_BTN)
@@ -43,10 +46,10 @@ class EnemyTable(skin: Skin) : Table(skin) {
         }
 
         return Table(skin).apply {
-            add(Image(skin.getDrawable(avatarKey))).size(80f, 80f)
-            add(arrowDown).size(36f, 36f).padLeft(-15f)
+            add(Image(skin.getDrawable(avatarKey))).size(80f)
+            add(arrowDown).size(36f)
             add(countLabel).width(30f)
-            add(arrowUp).size(36f, 36f)
+            add(arrowUp).size(36f)
         }
     }
 
