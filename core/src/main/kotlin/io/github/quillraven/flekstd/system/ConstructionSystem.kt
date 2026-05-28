@@ -20,6 +20,7 @@ import io.github.quillraven.flekstd.component.Tag
 import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_OBJECT
 import ktx.app.KtxInputAdapter
+import ktx.assets.dispose
 import ktx.assets.toInternalFile
 import ktx.collections.gdxArrayOf
 import ktx.collections.getOrPut
@@ -78,7 +79,7 @@ class ConstructionSystem(
         it += Animation(AnimationType.IDLE, cfg.gdxAnimations)
 
         it += cfg.perimeter()
-        it += cfg.attack()
+        it += cfg.attack(cfg.attackSnd)
         it += cfg.effects.map { effect -> effect() as Component<*> }
     }
 
@@ -117,6 +118,7 @@ class ConstructionSystem(
         towerCfgCache.values()
             .flatMap { it.gdxAnimations.values }
             .forEach { it.keyFrames.first().texture.dispose() }
+        towerCfgCache.values().map { it.attackSnd }.dispose()
         constructSnd.dispose()
     }
 }

@@ -69,6 +69,7 @@ class AttackSystem : IteratingSystem(
                 attackCmp.projectileDelay,
                 projectileCfg.scale,
                 projectileCfg.flipX,
+                attackCmp.sound,
             )
             if (projectileCfg.scale > 0f) {
                 // visible projectile

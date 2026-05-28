@@ -46,5 +46,6 @@ class ProjectileSystem : IteratingSystem(
                 projectile.remove()
             }
         }
+        projectileCmp.spawnSnd.play()
     }
 }

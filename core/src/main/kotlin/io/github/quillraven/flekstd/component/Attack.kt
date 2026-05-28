@@ -1,5 +1,6 @@
 package io.github.quillraven.flekstd.component
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
@@ -11,6 +12,7 @@ data class Attack(
     val projectileCfg: ProjectileCfg,
     val projectileDelay: Float,
     val projectileOffset: Vector2,
+    val sound: Sound,
 ) : Component<Attack> {
     var timer = 0f
 
