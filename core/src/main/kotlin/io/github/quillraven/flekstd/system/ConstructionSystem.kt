@@ -1,5 +1,6 @@
 package io.github.quillraven.flekstd.system
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
@@ -19,6 +20,7 @@ import io.github.quillraven.flekstd.component.Tag
 import io.github.quillraven.flekstd.component.Transform
 import io.github.quillraven.flekstd.component.Transform.Companion.Z_OBJECT
 import ktx.app.KtxInputAdapter
+import ktx.assets.toInternalFile
 import ktx.collections.gdxArrayOf
 import ktx.collections.getOrPut
 import ktx.math.vec2
@@ -34,6 +36,7 @@ class ConstructionSystem(
     private val pathEntities = family { all(Transform, Tag.PATH) }
     private val blockedTiles = gdxArrayOf<Vector2>()
     private val towerCfgCache: ObjectMap<String, TowerCfg> = ObjectMap()
+    private val constructSnd = Gdx.audio.newSound("sound/tower-construct.wav".toInternalFile())
 
     override fun onTick() {
         if (levelChangeRequestEntities.isNotEmpty) {
@@ -103,6 +106,7 @@ class ConstructionSystem(
                 if (position !in blockedTiles) {
                     towerEntity -= Tag.CONSTRUCTING
                     towerEntity[Render].color.set(Color.WHITE)
+                    constructSnd.play()
                 }
             }
         }
@@ -113,5 +117,6 @@ class ConstructionSystem(
         towerCfgCache.values()
             .flatMap { it.gdxAnimations.values }
             .forEach { it.keyFrames.first().texture.dispose() }
+        constructSnd.dispose()
     }
 }

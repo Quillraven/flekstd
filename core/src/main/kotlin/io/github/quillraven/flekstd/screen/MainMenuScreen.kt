@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.quillraven.flekstd.GdxGame
 import io.github.quillraven.flekstd.ui.MainMenuUI
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
 
 class MainMenuScreen(
     game: GdxGame,
@@ -14,9 +15,13 @@ class MainMenuScreen(
     private val inputMultiplexer: InputMultiplexer = game.inputMultiplexer,
     skin: Skin = game.skin,
 ) : KtxScreen {
+    private val btnClickSnd = Gdx.audio.newSound("sound/btn-click.wav".toInternalFile())
     private val mainMenuUI = MainMenuUI(
         skin,
-        onStartGame = { game.setScreen<GameScreen>() },
+        onStartGame = {
+            btnClickSnd.play()
+            game.setScreen<GameScreen>()
+        },
         onQuitGame = { Gdx.app.exit() },
     )
 
@@ -34,5 +39,9 @@ class MainMenuScreen(
         stage.viewport.apply()
         stage.act(delta)
         stage.draw()
+    }
+
+    override fun dispose() {
+        btnClickSnd.dispose()
     }
 }
