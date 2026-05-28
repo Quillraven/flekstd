@@ -49,6 +49,7 @@ class GameScreen(
     private val world = ecsWorld()
     private val gameUI = GameUI(skin, onTowerClicked = this::constructTower, onSpawnClicked = this::spawnWave)
     private val music = Gdx.audio.newMusic("music/adventure-begins.ogg".toInternalFile())
+    private val waveStartSnd = Gdx.audio.newSound("sound/wave-start.wav".toInternalFile())
 
     private fun ecsWorld(): World = configureWorld {
         injectables {
@@ -116,6 +117,7 @@ class GameScreen(
 
             entity.configure { it += Tag.SPAWNING }
         }
+        waveStartSnd.play()
     }
 
     fun waveComplete() {
@@ -134,5 +136,6 @@ class GameScreen(
     override fun dispose() {
         world.dispose()
         music.dispose()
+        waveStartSnd.dispose()
     }
 }
