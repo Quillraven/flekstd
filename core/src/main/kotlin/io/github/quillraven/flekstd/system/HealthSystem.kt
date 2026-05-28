@@ -1,5 +1,6 @@
 package io.github.quillraven.flekstd.system
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
@@ -11,11 +12,13 @@ import io.github.quillraven.flekstd.component.Health
 import io.github.quillraven.flekstd.component.Remove
 import io.github.quillraven.flekstd.component.Render
 import io.github.quillraven.flekstd.component.Transform
+import ktx.assets.toInternalFile
 
 class HealthSystem : IteratingSystem(
     family = family { all(Transform, Render, Health) }
 ) {
     private val dustAnimations = animationMapOf("dust", AnimationType.IDLE)
+    private val deathSnd = Gdx.audio.newSound("sound/death.wav".toInternalFile())
 
     override fun onTickEntity(entity: Entity) {
         val healthCmp = entity[Health]
@@ -29,6 +32,7 @@ class HealthSystem : IteratingSystem(
                 it += Animation(AnimationType.IDLE, dustAnimations, PlayMode.NORMAL)
                 it += Remove(dustAnimations[AnimationType.IDLE]?.animationDuration ?: 0f)
             }
+            deathSnd.play()
             entity.remove()
             return
         }
@@ -40,5 +44,6 @@ class HealthSystem : IteratingSystem(
         dustAnimations.values.forEach {
             it.keyFrames.first().texture.dispose()
         }
+        deathSnd.dispose()
     }
 }
