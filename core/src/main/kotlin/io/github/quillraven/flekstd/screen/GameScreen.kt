@@ -1,5 +1,6 @@
 package io.github.quillraven.flekstd.screen
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -34,6 +35,7 @@ import io.github.quillraven.flekstd.system.UiRenderSystem
 import io.github.quillraven.flekstd.ui.GameUI
 import ktx.app.KtxInputAdapter
 import ktx.app.KtxScreen
+import ktx.assets.toInternalFile
 
 class GameScreen(
     game: GdxGame,
@@ -46,6 +48,7 @@ class GameScreen(
 ) : KtxScreen {
     private val world = ecsWorld()
     private val gameUI = GameUI(skin, onTowerClicked = this::constructTower, onSpawnClicked = this::spawnWave)
+    private val music = Gdx.audio.newMusic("music/adventure-begins.ogg".toInternalFile())
 
     private fun ecsWorld(): World = configureWorld {
         injectables {
@@ -88,6 +91,10 @@ class GameScreen(
             it += LevelChangeRequest("level_1")
         }
         world.systems.filterIsInstance<KtxInputAdapter>().forEach { inputMultiplexer.addProcessor(it) }
+
+        // start bgd music
+        music.volume = 0.5f
+        music.play()
     }
 
     fun constructTower(towerKey: String) {
@@ -126,5 +133,6 @@ class GameScreen(
 
     override fun dispose() {
         world.dispose()
+        music.dispose()
     }
 }
