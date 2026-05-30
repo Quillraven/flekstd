@@ -95,6 +95,7 @@ class GameScreen(
 
         // start bgd music
         music.volume = 0.5f
+        music.isLooping = true
         music.play()
     }
 

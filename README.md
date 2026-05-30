@@ -24,7 +24,8 @@ The game features three towers (Warrior, Archer, Monk) and two enemy types (Pawn
 
 ## 📸 Screenshots
 
-_TODO: add screenshots_
+<img width="800" alt="Screenshot 1" src="https://github.com/user-attachments/assets/e4035581-1755-4a04-9ee3-87442110f869" />
+<img width="800" alt="Screenshot 2" src="https://github.com/user-attachments/assets/1a6fde95-33af-4581-9d79-18ede57de573" />
 
 ## 🙏 Credits
 
