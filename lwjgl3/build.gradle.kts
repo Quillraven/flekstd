@@ -29,6 +29,7 @@ application {
 
 tasks {
     jar {
+        archiveBaseName.set(application.applicationName)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         from(files(sourceSets.main.get().output.classesDirs))
@@ -48,11 +49,11 @@ construo {
     targets {
         create<Target.Linux>("linuxX64") {
             architecture.set(Target.Architecture.X86_64)
-            jdkUrl.set("https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.1%2B8/OpenJDK25U-jdk_x64_linux_hotspot_25.0.1_8.tar.gz")
+            jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.19%2B10/OpenJDK17U-jdk_x64_linux_hotspot_17.0.19_10.tar.gz")
         }
         create<Target.Windows>("winX64") {
             architecture.set(Target.Architecture.X86_64)
-            jdkUrl.set("https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.1%2B8/OpenJDK25U-jdk_x64_windows_hotspot_25.0.1_8.zip")
+            jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.19%2B10/OpenJDK17U-jdk_x64_windows_hotspot_17.0.19_10.zip")
         }
     }
 }
