@@ -115,6 +115,8 @@ class ConstructionSystem(
     }
 
     override fun onDispose() {
+        // All keyFrames of an animation share the same texture (one sprite sheet per animation),
+        // so disposing the first frame's texture is sufficient to release the entire sheet.
         towerCfgCache.values()
             .flatMap { it.gdxAnimations.values }
             .forEach { it.keyFrames.first().texture.dispose() }

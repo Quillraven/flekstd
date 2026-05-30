@@ -12,6 +12,8 @@ class AnimationSystem : IteratingSystem(
     override fun onTickEntity(entity: Entity) {
         val animationCmp = entity[Animation]
 
+        // GdxAnimation objects are shared across all entities of the same type (cached in cfg).
+        // playMode must be set every frame so each entity's intended mode is applied before getKeyFrame.
         animationCmp.current.playMode = animationCmp.playMode
         val keyFrame = animationCmp.current.getKeyFrame(animationCmp.stateTime)
         entity[Render].region = keyFrame

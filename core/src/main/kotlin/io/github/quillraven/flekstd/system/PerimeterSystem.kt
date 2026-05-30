@@ -15,6 +15,8 @@ class PerimeterSystem(
     private val gameViewport: Viewport = inject(),
 ) : IteratingSystem(
     family = family { all(Perimeter, Transform) },
+    // Run 10 times per second instead of every frame — range checks don't need per-frame precision
+    // and this keeps the cost low when many towers are active simultaneously.
     interval = Fixed(1 / 10f),
 ) {
     private val enemies = family { all(Tag.ENEMY, Transform) }

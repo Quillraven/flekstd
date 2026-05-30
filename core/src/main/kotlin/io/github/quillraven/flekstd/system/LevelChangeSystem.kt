@@ -58,7 +58,9 @@ class LevelChangeSystem : IteratingSystem(
         val startLine = lines[1]
 
         // parse start
-        val [startX, startY] = startLine.substringAfter("start=").split(",").map { it.trim() }
+        val startPosition = startLine.substringAfter("start=").split(",").map { it.trim() }
+        if (startPosition.size < 2) gdxError("Expected 'start=x,y' but got '$startLine'")
+        val [startX, startY] = startPosition
         val start = vec2(startX.toFloat(), startY.toFloat())
         // parse path info
         val pathSplit = pathLine.substringAfter("path=").split(",").map { it.trim() }
