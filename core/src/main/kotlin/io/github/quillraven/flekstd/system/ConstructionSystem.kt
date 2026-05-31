@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.ObjectMap
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.Entity
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
@@ -80,7 +79,7 @@ class ConstructionSystem(
 
         it += cfg.perimeter()
         it += cfg.attack(cfg.attackSnd)
-        it += cfg.effects.map { effect -> effect() as Component<*> }
+        it += cfg.effects.map { effect -> effect() }
     }
 
     // return false to also notify other processors

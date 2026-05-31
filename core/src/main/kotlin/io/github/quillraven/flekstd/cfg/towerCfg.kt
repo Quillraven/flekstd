@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import io.github.quillraven.flekstd.component.AnimationType
 import io.github.quillraven.flekstd.component.Attack
-import io.github.quillraven.flekstd.component.DamageEffect
+import io.github.quillraven.flekstd.component.DamageEffectComponent
 import io.github.quillraven.flekstd.component.GdxAnimation
 import io.github.quillraven.flekstd.component.Perimeter
 import io.github.quillraven.flekstd.component.SlowEffect
@@ -21,7 +21,7 @@ data class TowerCfg(
     val attackSnd: Sound,
     val scale: Float,
     val gdxAnimations: EnumMap<AnimationType, GdxAnimation>,
-    val effects: List<() -> DamageEffect> = emptyList(),
+    val effects: List<() -> DamageEffectComponent<*>> = emptyList(),
 ) {
     companion object {
         fun byTowerKey(key: String): TowerCfg = when (key) {
