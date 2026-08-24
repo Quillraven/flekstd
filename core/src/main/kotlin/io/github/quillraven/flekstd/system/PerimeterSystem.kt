@@ -3,6 +3,8 @@ package io.github.quillraven.flekstd.system
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef
+import com.github.quillraven.fleks.EntityRef.Companion.isValid
 import com.github.quillraven.fleks.Fixed
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
@@ -32,7 +34,7 @@ class PerimeterSystem(
             2 * perimeterCmp.range + size.x, 2 * perimeterCmp.range + size.y
         )
 
-        if (!perimeterCmp.target.wasRemoved()) {
+        if (perimeterCmp.target.isValid()) {
             // valid target -> check if it is out of range
             val [targetPos, targetSize] = perimeterCmp.target[Transform]
             val targetCenterX = targetPos.x + targetSize.x * 0.5f
@@ -49,6 +51,6 @@ class PerimeterSystem(
             val enemyCenterX = enemyPos.x + enemySize.x * 0.5f
             val enemyCenterY = enemyPos.y + enemySize.y * 0.5f
             perimeterRect.contains(enemyCenterX, enemyCenterY)
-        } ?: Entity.NONE
+        }?.getRef() ?: EntityRef.NONE
     }
 }

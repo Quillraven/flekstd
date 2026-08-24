@@ -1,6 +1,7 @@
 package io.github.quillraven.flekstd.system
 
 import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef.Companion.isValid
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.Animation
@@ -35,7 +36,7 @@ class ProjectileSystem : IteratingSystem(
             }
             it += Homing(projectileCmp.target, projectileCmp.originalTargetPosition) {
                 // onReached lambda
-                if (!projectileCmp.target.wasRemoved()) {
+                if (projectileCmp.target.isValid()) {
                     // target still alive -> damage it
                     projectileCmp.target.configure { target ->
                         val damageRequestCmp = target.getOrAdd(DamageRequest) { DamageRequest(gdxArrayOf()) }

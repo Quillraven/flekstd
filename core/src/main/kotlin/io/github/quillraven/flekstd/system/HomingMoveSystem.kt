@@ -2,6 +2,7 @@ package io.github.quillraven.flekstd.system
 
 import com.badlogic.gdx.math.MathUtils
 import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef.Companion.isValid
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.Homing
@@ -18,7 +19,7 @@ class HomingMoveSystem : IteratingSystem(
         val speed = entity[Speed].current
 
         // update target position if target is still alive
-        if (!target.wasRemoved()) {
+        if (target.isValid()) {
             targetPosition.set(target[Transform].position)
         }
 

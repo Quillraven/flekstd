@@ -4,11 +4,11 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
-import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef
 
 data class Projectile(
-    val source: Entity,
-    val target: Entity,
+    val source: EntityRef,
+    val target: EntityRef,
     val originalTargetPosition: Vector2,
     val damage: Float,
     var delay: Float,

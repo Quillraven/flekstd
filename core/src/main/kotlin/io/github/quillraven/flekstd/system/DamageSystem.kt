@@ -1,6 +1,7 @@
 package io.github.quillraven.flekstd.system
 
 import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef.Companion.isNotValid
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.DamageRequest
@@ -21,11 +22,11 @@ class DamageSystem : IteratingSystem(
 
         requests.forEach { request ->
             val tower = request.source
-            if (tower.wasRemoved()) return@forEach
+            if (tower.isNotValid()) return@forEach
 
             healthCmp.current -= request.amount
-            applyDamageEffects(tower, entity)
-            applySplash(tower, entity, request.amount)
+            applyDamageEffects(tower.entity, entity)
+            applySplash(tower.entity, entity, request.amount)
         }
 
         entity.configure { it -= DamageRequest }

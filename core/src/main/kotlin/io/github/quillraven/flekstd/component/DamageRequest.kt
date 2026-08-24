@@ -2,11 +2,11 @@ package io.github.quillraven.flekstd.component
 
 import com.github.quillraven.fleks.Component
 import com.github.quillraven.fleks.ComponentType
-import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef
 import ktx.collections.GdxArray
 
 data class DamageInfo(
-    val source: Entity,
+    val source: EntityRef,
     val amount: Float,
 )
 

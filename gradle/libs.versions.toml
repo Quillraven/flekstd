@@ -3,7 +3,7 @@ jvmToolchainVersion = "17"
 kotlinVersion = "2.4.0"
 gdxVersion = "1.14.2"
 ktxVersion = "1.13.1-rc1"
-fleksVersion = "2.14"
+fleksVersion = "2.15-SNAPSHOT"
 gdxTeaVmVersion = "1.5.6"
 construoVersion = "2.1.0"
 

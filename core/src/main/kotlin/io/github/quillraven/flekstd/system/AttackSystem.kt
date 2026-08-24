@@ -2,6 +2,8 @@ package io.github.quillraven.flekstd.system
 
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.github.quillraven.fleks.Entity
+import com.github.quillraven.fleks.EntityRef
+import com.github.quillraven.fleks.EntityRef.Companion.isNotValid
 import com.github.quillraven.fleks.IteratingSystem
 import com.github.quillraven.fleks.World.Companion.family
 import io.github.quillraven.flekstd.component.Animation
@@ -33,7 +35,7 @@ class AttackSystem : IteratingSystem(
 
         // attack ready -> check if there is a target
         val target = entity[Perimeter].target
-        if (target.wasRemoved()) {
+        if (target.isNotValid()) {
             if (animationCmp?.currentType != AnimationType.IDLE) {
                 animationCmp?.changeTo(AnimationType.IDLE, PlayMode.LOOP)
             }
@@ -45,13 +47,13 @@ class AttackSystem : IteratingSystem(
         attackCmp.timer = attackCmp.cooldown
 
         // spawn projectile entity
-        spawnProjectile(attackCmp, entity, target)
+        spawnProjectile(attackCmp, entity.getRef(), target)
     }
 
     private fun spawnProjectile(
         attackCmp: Attack,
-        tower: Entity,
-        target: Entity
+        tower: EntityRef,
+        target: EntityRef
     ) {
         val projectileCfg = attackCmp.projectileCfg
         world.entity {
